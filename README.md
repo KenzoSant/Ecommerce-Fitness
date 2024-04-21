@@ -1,6 +1,6 @@
 # :green_salad: Ecommerce-Fitnnes 
 
-##  QueryCar  
+##  Ecommerce-Fitness 
 - Ecommerce de comida Fitness.
 - React Js
 - Responsivo.
