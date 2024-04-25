@@ -1,4 +1,3 @@
-// StoreContextProvider.js
 import { createContext, useState, useEffect } from "react";
 import axios from 'axios';
 
@@ -12,11 +11,11 @@ const StoreContextProvider = (props) => {
         const fetchFoodList = async () => {
             try {
                 const response = await axios.get('http://localhost:8080/foods');
-                const foodListWithImages = response.data.map(food => ({
+                const foodListWithImagesAndCategories = response.data.map(food => ({
                     ...food,
                     image: `src/assets/${food.url_image}` // Adicionando a URL da imagem ao objeto de alimento
                 }));
-                setFoodList(foodListWithImages);
+                setFoodList(foodListWithImagesAndCategories);
             } catch (error) {
                 console.error('Erro ao buscar alimentos:', error);
             }

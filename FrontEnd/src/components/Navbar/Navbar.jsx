@@ -10,9 +10,9 @@ const Navbar = () => {
     <div className="navbar">
         <img src={assets.fit_food} alt="" className='logo'/>
         <ul className="navbar-menu">
-            <li onClick={()=>setMenu("home")} className={menu==="home"?"active":""}><a href="" class="navbar__link">HOME</a></li>
-            <li onClick={()=>setMenu("menu")} className={menu==="menu"?"active":""}><a href="" class="navbar__link">MENU</a></li>
-            <li onClick={()=>setMenu("contact")} className={menu==="contact"?"active":""}><a href="" class="navbar__link">CONTACT</a></li>
+            <li onClick={()=>setMenu("home")} className={menu==="home"?"active":""}><a href="" className="navbar__link">HOME</a></li>
+            <li onClick={()=>setMenu("menu")} className={menu==="menu"?"active":""}><a href="" className="navbar__link">MENU</a></li>
+            <li onClick={()=>setMenu("contact")} className={menu==="contact"?"active":""}><a href="" className="navbar__link">CONTACT</a></li>
         </ul>
         <div className="navbar-right">
             <img className="search_img" src={assets.search_icon} alt="" />
