@@ -18,9 +18,9 @@ const Footer = () => {
             <div className="footer-content-center">
                 <h2>COMPANY</h2>
                 <ul>
-                    <li>Home</li>
-                    <li>Menu</li>
-                    <li>Contact</li>
+                    <li><a href="#home">Home</a></li>
+                    <li><a href="#explore-menu">Menu</a></li>
+                    <li><a href="footer">Contact</a></li>
                 </ul>
             </div>
             <div className="footer-content-right">
