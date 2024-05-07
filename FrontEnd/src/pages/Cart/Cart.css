@@ -1,0 +1,106 @@
+.cart{
+    margin-top: 100px;
+}
+.cart-items-title{
+    display: grid;
+    grid-template-columns: 1fr 1.5fr 1fr 1fr 1fr 0.5fr;
+    align-items: center;
+    color: var(--primary-color-grey);
+    font-size: max(1vw, 12px);
+}
+.cart-items-item{
+    margin: 10px 0px;
+    color: var(--primary-color-dark);
+}
+.cart-items-item img{
+    width: 50px;
+}
+.cart hr{
+    height: 1px;
+    background-color: var(--second-color-yellow);
+    border: none;
+}
+.cart-items-item .cross{
+    cursor: pointer;
+    font-size: 25px;
+}
+.cart-bottom{
+    margin-top: 80px;
+    display: flex;
+    justify-content: space-between;
+    gap: max(12vw,20px);
+}
+.cart-total{
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+.cart-total-details{
+    display: flex;
+    justify-content: space-between;
+    color: var(--primary-color-grey);
+}
+.cart-total hr{
+    margin: 10px 0px;
+}
+.cart-total  button{
+    border: none;
+    color: var(--primary-color-white);
+    background-color: var(--second-color-green);
+    width: max(15vw,200px);
+    padding: 12px 0px;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: .5s;
+}
+.cart-total button:hover,
+.cart-total button:focus {
+  box-shadow: inset 15em 0 0 0 var(--second-color-orange);
+  transition: .5s;
+  color: #f5f6fa;
+}
+.cart-promocode{
+    flex: 1;
+}
+.cart-promocode p{
+    color: var(--primary-color-grey);
+}
+.cart-promocode-input{
+    margin-top: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: rgb(229, 229, 229);
+    border-radius: 10px;
+}
+.cart-promocode-input input{
+    background: transparent;
+    border: none;
+    outline: none;
+    padding-left: 10px;
+}
+.cart-promocode-input button{
+    width: max(10vw,150px);
+    padding: 12px 5px;
+    background-color: var(--primary-color-dark);
+    border: none;
+    color: var(--primary-color-white);
+    border-radius: 10px;
+    transition: .5s;
+}
+.cart-promocode-input button:hover,
+.cart-promocode-input button:focus {
+  box-shadow: inset 15em 0 0 0 var(--second-color-orange);
+  transition: .5s;
+  color: #f5f6fa;
+}
+
+@media (max-width: 750px){
+    .cart-bottom{
+        flex-direction: column-reverse;
+    }
+    .cart-promocode{
+        justify-content: start;
+    }
+}
