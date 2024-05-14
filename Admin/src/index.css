@@ -1,0 +1,78 @@
+/* ========== GOOGLE FONT ========== */
+@font-face {
+  font-family: 'MadeInfinity-Black';
+  src: url('../src/fonts/MadeInfinity/MADEINFINITY PERSONALUSE-Black.otf') format('opentype');   
+
+  font-family: 'MadeInfinity-Light';
+  src: url('../src/fonts/MadeInfinity/MADEINFINITY PERSONALUSE-Light.otf') format('opentype');
+
+  font-family: 'MadeInfinity-Medium';
+  src: url('../src/fonts/MadeInfinity/MADEINFINITY PERSONALUSE-Medium.otf') format('opentype');
+
+  font-family: 'MadeInfinity-Regular';
+  src: url('../src/fonts/MadeInfinity/MADEINFINITY PERSONALUSE-Regular.otf') format('opentype'),
+}
+
+:root {
+
+  /*=========== COLORS =========*/
+  --primary-color-dark: 	#000000;
+  --primary-color-white: 	#FFFFFF;
+  --primary-color-grey: #585858;
+
+  --second-color-yellow: #FCDD26;
+  --second-color-green: #88AB1B;
+  --second-color-dark-green: #657e1a;
+  --second-color-orange: #F67D0C;
+
+  /*=========== FONT =========*/
+  --font-MadeInfinity-black: 'MadeInfinity-Black', 'sans-serif';
+  --font-MadeInfinity-light: 'MadeInfinity-Light', 'sans-serif';
+  --font-MadeInfinity-medium: 'MadeInfinity-Medium', 'sans-serif';
+  --font-MadeInfinity-regular: 'MadeInfinity-Regular', 'sans-serif';
+  
+}
+
+*{
+  font-family: var(--font-MadeInfinity-regular);
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+  scroll-behavior: smooth;
+}
+
+body{
+  min-height: 100vh;
+  font-weight: 100;
+}
+
+a{
+  text-decoration: none;
+  color: inherit;
+}
+
+hr{
+  border: none;
+  height: 1.5px;
+  background-color: var(--primary-color-grey);
+}
+
+.flex-col{
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.app-content{
+  display: flex;
+  margin: auto;
+}
+
+@keyframes FadeIn {
+  0%{
+    opacity: 0;
+  }
+  100%{
+    opacity: 1;
+  }
+}
