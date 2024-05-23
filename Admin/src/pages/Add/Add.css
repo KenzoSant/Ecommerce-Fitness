@@ -11,12 +11,26 @@
 .add-img-upload img{
     width: 120px;
 }
-.add-product-name,
-.add-product-description{
+.class{
     width: max(40%,280px);
 }
-.add-product-name input,
-.add-product-description textarea{
+
+.placeholder-option {
+    color: #888; 
+}
+select:invalid {
+    color: #888; 
+}
+select:not(:invalid) {
+    color: initial; 
+}
+select:invalid option[value=""] {
+    color: #888; 
+}
+
+.class input,
+.add-product-description textarea,
+.add-product-category select{
     padding: 10px;
     border-radius: 10px;
     border: 1.5px solid var(--second-color-green);
@@ -32,7 +46,11 @@
     border-radius: 10px;
     border: 1.5px solid var(--second-color-green);
 }
-.add-btn{
+.ingredient-input input{
+    margin-right: 1rem;
+}
+.add-btn,
+.rem-ing{
     max-width: 120px;
     border: none;
     padding: 10px;
@@ -42,8 +60,25 @@
     border-radius: 10px;
     transition: .5s;
 }
+.add-ing{
+    border: none;
+    padding: 10px;
+    background-color: var(--second-color-green);
+    color: var(--primary-color-white);
+    cursor: pointer;
+    border-radius: 10px;
+    transition: .5s;
+}
+.add-ing:hover,
+.add-ing:focus{
+    box-shadow: inset 28em 0 0 0 var(--second-color-orange);
+    transition: .6s;
+    color: #f5f6fa;
+}
 .add-btn:hover,
-.add-btn:focus {
+.add-btn:focus,
+.rem-ing:hover,
+.rem-ing:focus{
   box-shadow: inset 13em 0 0 0 var(--second-color-orange);
   transition: .5s;
   color: #f5f6fa;
