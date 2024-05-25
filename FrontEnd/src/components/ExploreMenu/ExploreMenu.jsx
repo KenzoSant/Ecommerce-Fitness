@@ -1,25 +1,30 @@
-import React from 'react'
-import './ExploreMenu.css'
-import { menu_list } from "../../assets/assets";
+import React, { useContext } from 'react';
+import './ExploreMenu.css';
+import { StoreContext } from '../../context/StoreContext';
 
-const ExploreMenu = ({category,setCategory}) => {
-  return (
-    <div className="explore-menu" id="explore-menu">
-        <h1>Our Menu</h1>
-        <p>Find your best dish</p>
-        <div className="explore-menu-list">
-            {menu_list.map((item,index)=>{              
-                return(
-                    <div onClick={()=>setCategory(prev=>prev===item.menu_name?"All":item.menu_name)} key={index} className="explore-menu-list-item">
-                        <img className={category===item.menu_name?"active":""} src={item.menu_image} alt="" />
-                        <p>{item.menu_name}</p>
+const ExploreMenu = ({ category, setCategory }) => {
+    const { categories } = useContext(StoreContext);
+
+    return (
+        <div className="explore-menu" id="explore-menu">
+            <h1>Our Menu</h1>
+            <p>Find your best dish</p>
+            <div className="explore-menu-list">
+                {categories.map((item, index) => (
+                    <div
+                        onClick={() => setCategory(prev => (prev === item.name ? "All" : item.name))}
+                        key={index}
+                        className="explore-menu-list-item"
+                    >
+                        <img className={category === item.name ? "active" : ""} src={item.image} />
+                        <p>{item.name}</p>
                     </div>
-                )
-            })}
-        </div>
-        <hr />
-    </div>
-  )
-}
+                ))}
+            </div>
 
-export default ExploreMenu
+            <hr />
+        </div>
+    );
+};
+
+export default ExploreMenu;

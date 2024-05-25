@@ -6,6 +6,7 @@ export const StoreContext = createContext(null)
 const StoreContextProvider = (props) => {
     const [cartItems, setCartItems] = useState({});
     const [foodList, setFoodList] = useState([]);
+    const [categories, setCategories] = useState([]);
     const [cartItemList, setCartItemList] = useState([]); // Lista de itens do carrinho
 
     useEffect(() => {
@@ -22,7 +23,21 @@ const StoreContextProvider = (props) => {
             }
         };
 
+        const fetchCategories = async () => {
+            try {
+                const response = await axios.get('http://localhost:8080/categoriesFood');
+                const categoriesWithImages = response.data.map(category => ({
+                    ...category,
+                    image: `src/assets/${category.url_image}` // Adicionando a URL da imagem ao objeto de categoria
+                }));
+                setCategories(categoriesWithImages);
+            } catch (error) {
+                console.error('Erro ao buscar categorias:', error);
+            }
+        };
+
         fetchFoodList();
+        fetchCategories();
     }, []);
 
     const addToCart = (itemId, itemName, itemPrice, itemImage) => {
@@ -40,7 +55,7 @@ const StoreContextProvider = (props) => {
             setCartItemList(updatedCartItemList);
         }
     };
-  
+
     const removeFromCart = (itemId) => {
         setCartItems((prev) => ({ ...prev, [itemId]: prev[itemId] - 1 }));
         const updatedCartItemList = cartItemList.map(item => {
@@ -52,14 +67,14 @@ const StoreContextProvider = (props) => {
         setCartItemList(updatedCartItemList.filter(item => item.quantity > 0));
     }
 
-    const getTotalCartAmount = ()=> {
+    const getTotalCartAmount = () => {
         let totalAmount = 0;
         cartItemList.forEach(item => {
             totalAmount += item.price * cartItems[item.id];
         });
         return totalAmount;
     }
-    
+
     const getTotalCartItems = () => {
         let totalItems = 0;
         Object.values(cartItems).forEach(quantity => {
@@ -70,9 +85,10 @@ const StoreContextProvider = (props) => {
 
     const contextValue = {
         foodList,
+        categories,
         cartItems,
         setCartItems,
-        cartItemList, 
+        cartItemList,
         addToCart,
         removeFromCart,
         getTotalCartAmount,

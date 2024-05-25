@@ -39,7 +39,7 @@
 .explore-menu-list-item p{
     margin-top: 10px;
     color: var(--primary-color-dark);
-    font-size: max(1.4vw,16px);
+    font-size: max(1.2vw,14px);
     cursor: pointer;
 }
 
@@ -47,6 +47,13 @@
     margin: 10px 0px;
     height: 2px;
     background-color: var(--second-color-yellow);
+}
+
+.explore-menu-list-item img{
+    border-radius: 50%;
+    height: 80px;
+    width: 80px;
+    object-fit: cover;
 }
 
 .explore-menu-list-item .active{

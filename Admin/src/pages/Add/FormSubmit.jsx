@@ -1,7 +1,9 @@
-import React from 'react';
+import React, { useState } from 'react';
 import axios from 'axios';
 
 const FormSubmit = ({ formData, selectedIngredients, onSuccess, onError }) => {
+  const [successMessage, setSuccessMessage] = useState('');
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -20,6 +22,7 @@ const FormSubmit = ({ formData, selectedIngredients, onSuccess, onError }) => {
 
     try {
       const response = await axios.post('http://localhost:8080/foods', foodData);
+      setSuccessMessage('Cadastrado com sucesso!');
       onSuccess(response.data);
     } catch (error) {
       console.error('Erro ao enviar requisição:', error);
@@ -28,9 +31,12 @@ const FormSubmit = ({ formData, selectedIngredients, onSuccess, onError }) => {
   };
 
   return (
-    <button type="submit" className="add-btn" onClick={handleSubmit}>
-      ADD
-    </button>
+    <div>
+      {successMessage && <p className="success-message">{successMessage}</p>}
+      <button type="submit" className="add-btn" onClick={handleSubmit}>
+        ADD
+      </button>
+    </div>
   );
 };
 

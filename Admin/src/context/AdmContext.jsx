@@ -1,4 +1,5 @@
-import { createContext, useState, useEffect } from "react";
+// StoreContextProvider.js
+import { createContext, useState, useEffect } from 'react';
 import axios from 'axios';
 
 export const StoreContext = createContext(null);
@@ -7,7 +8,7 @@ const StoreContextProvider = (props) => {
     const [cartItems, setCartItems] = useState({});
     const [foodList, setFoodList] = useState([]);
     const [cartItemList, setCartItemList] = useState([]);
-    const [categories, setCategories] = useState([]); 
+    const [categories, setCategories] = useState([]);
     const [ingredients, setIngredients] = useState([]);
 
     useEffect(() => {
@@ -16,7 +17,7 @@ const StoreContextProvider = (props) => {
                 const response = await axios.get('http://localhost:8080/foods');
                 const foodListWithImagesAndCategories = response.data.map(food => ({
                     ...food,
-                    image: `src/assets/${food.url_image}`
+                    image: `http://localhost:5174/src/assets/${food.url_image}` // Ajuste aqui para o caminho correto
                 }));
                 setFoodList(foodListWithImagesAndCategories);
             } catch (error) {
@@ -100,7 +101,7 @@ const StoreContextProvider = (props) => {
         getTotalCartAmount,
         getTotalCartItems,
         categories,
-        ingredients, 
+        ingredients,
     };
 
     return (
