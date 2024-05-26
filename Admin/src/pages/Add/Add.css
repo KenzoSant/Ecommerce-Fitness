@@ -60,6 +60,10 @@ select:invalid option[value=""] {
     border-radius: 10px;
     transition: .5s;
 }
+.add-btn{
+    margin-bottom: 1rem;
+}
+
 .add-ing{
     border: none;
     padding: 10px;
@@ -82,4 +86,7 @@ select:invalid option[value=""] {
   box-shadow: inset 13em 0 0 0 var(--second-color-orange);
   transition: .5s;
   color: #f5f6fa;
+}
+.success-message{
+    margin: 1rem;
 }

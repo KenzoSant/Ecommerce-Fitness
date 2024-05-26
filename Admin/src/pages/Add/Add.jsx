@@ -1,12 +1,10 @@
 import React, { useState, useContext } from 'react';
 import './Add.css';
 import { assets } from '../../assets/assets';
-import { StoreContext } from '../../context/AdmContext';
-import axios from 'axios';
-import FormSubmit from './FormSubmit';
+import { AdmContext } from '../../context/AdmContext';
 
 const Add = () => {
-  const { categories, ingredients } = useContext(StoreContext);
+  const { categories, ingredients, addFood } = useContext(AdmContext);
   const [selectedIngredientIds, setSelectedIngredientIds] = useState([]);
   const [selectedIngredient, setSelectedIngredient] = useState('');
   const [formData, setFormData] = useState({
@@ -17,6 +15,7 @@ const Add = () => {
     description: '',
     image: null
   });
+  const [successMessage, setSuccessMessage] = useState('');
 
   const handleIngredientChange = (e, index) => {
     const newIngredientIds = [...selectedIngredientIds];
@@ -57,6 +56,8 @@ const Add = () => {
       image: null
     });
     setSelectedIngredientIds([]);
+    setSuccessMessage('Cadastrado com sucesso!');
+    setTimeout(() => setSuccessMessage(''), 3000);
   };
 
   const handleError = (error) => {
@@ -65,23 +66,8 @@ const Add = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-  
-    const foodData = {
-      ...formData,
-      ingredients: selectedIngredientIds
-    };
-  
-    // Exibir os dados no console
-    console.log('Dados a serem cadastrados:', foodData);
-  
-    try {
-      const response = await axios.post('http://localhost:8080/foods', foodData);
-      handleSuccess(response.data);
-    } catch (error) {
-      handleError(error);
-    }
+    await addFood(formData, selectedIngredientIds, handleSuccess, handleError);
   };
-  
 
   return (
     <div className="add">
@@ -94,7 +80,7 @@ const Add = () => {
           <input type="file" id='image' name="image" onChange={handleChange} hidden required />
         </div>
 
-        <div className="add-product-name flex-col class" >
+        <div className="add-product-name flex-col class">
           <p>Product Name</p>
           <input type="text" name='name' value={formData.name} onChange={handleChange} placeholder='Type Here' required />
         </div>
@@ -118,7 +104,6 @@ const Add = () => {
             ))}
           </select>
         </div>
-
 
         <div className="add-product-category flex-col class">
           <p>Product Ingredients</p>
@@ -154,13 +139,8 @@ const Add = () => {
           <textarea name='description' value={formData.description} onChange={handleChange} rows='5' placeholder='Type Here' required />
         </div>
 
-        <FormSubmit
-          formData={formData}
-          selectedIngredients={selectedIngredientIds}
-          onSuccess={handleSuccess}
-          onError={handleError}
-        />
-
+        {successMessage && <p className="success-message">{successMessage}</p>}
+        <button type="submit" className="add-btn erclass">ADD</button>
       </form>
     </div>
   );

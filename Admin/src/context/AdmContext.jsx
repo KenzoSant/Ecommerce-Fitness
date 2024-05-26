@@ -1,10 +1,9 @@
-// StoreContextProvider.js
 import { createContext, useState, useEffect } from 'react';
 import axios from 'axios';
 
-export const StoreContext = createContext(null);
+export const AdmContext = createContext(null);
 
-const StoreContextProvider = (props) => {
+const AdmContextProvider = (props) => {
     const [cartItems, setCartItems] = useState({});
     const [foodList, setFoodList] = useState([]);
     const [cartItemList, setCartItemList] = useState([]);
@@ -17,7 +16,7 @@ const StoreContextProvider = (props) => {
                 const response = await axios.get('http://localhost:8080/foods');
                 const foodListWithImagesAndCategories = response.data.map(food => ({
                     ...food,
-                    image: `http://localhost:5174/src/assets/${food.url_image}` // Ajuste aqui para o caminho correto
+                    image: `http://localhost:5174/src/assets/${food.url_image}`
                 }));
                 setFoodList(foodListWithImagesAndCategories);
             } catch (error) {
@@ -28,7 +27,7 @@ const StoreContextProvider = (props) => {
         const fetchCategories = async () => {
             try {
                 const response = await axios.get('http://localhost:8080/categoriesFood');
-                setCategories(response.data); // Supondo que a resposta é uma lista de categorias
+                setCategories(response.data);
             } catch (error) {
                 console.error('Erro ao buscar categorias:', error);
             }
@@ -48,31 +47,44 @@ const StoreContextProvider = (props) => {
         fetchIngredients();
     }, []);
 
-    const addToCart = (itemId, itemName, itemPrice, itemImage) => {
-        if (!cartItems[itemId]) {
-            setCartItems((prev) => ({ ...prev, [itemId]: 1 }));
-            setCartItemList((prev) => ([...prev, { id: itemId, name: itemName, price: itemPrice, image: itemImage, quantity: 1 }]));
-        } else {
-            setCartItems((prev) => ({ ...prev, [itemId]: prev[itemId] + 1 }));
-            const updatedCartItemList = cartItemList.map(item => {
-                if (item.id === itemId) {
-                    return { ...item, quantity: item.quantity + 1 };
-                }
-                return item;
-            });
-            setCartItemList(updatedCartItemList);
+    const deleteProduct = async (itemId) => {
+        try {
+            await axios.delete(`http://localhost:8080/foods/${itemId}`);
+            setFoodList((prev) => prev.filter(item => item.id !== itemId));
+        } catch (error) {
+            console.error('Erro ao deletar produto:', error);
         }
     };
 
-    const removeFromCart = (itemId) => {
-        setCartItems((prev) => ({ ...prev, [itemId]: prev[itemId] - 1 }));
-        const updatedCartItemList = cartItemList.map(item => {
-            if (item.id === itemId) {
-                return { ...item, quantity: item.quantity - 1 };
-            }
-            return item;
-        });
-        setCartItemList(updatedCartItemList.filter(item => item.quantity > 0));
+    const updateProduct = async (updatedItem) => {
+        try {
+            const response = await axios.put(`http://localhost:8080/foods/${updatedItem.id}`, updatedItem);
+            setFoodList((prev) => prev.map(item => (item.id === updatedItem.id ? response.data : item)));
+        } catch (error) {
+            console.error('Erro ao atualizar produto:', error);
+        }
+    };
+
+    const addFood = async (formData, selectedIngredientIds, onSuccess, onError) => {
+        const foodData = {
+            name: formData.name,
+            price: parseFloat(formData.price),
+            kcal: parseInt(formData.kcal),
+            id_CategoryFood: parseInt(formData.category),
+            ingredients: selectedIngredientIds.map(id => ({ id: parseInt(id) })),
+            url_image: formData.image ? formData.image.name : '',
+        };
+
+        console.log('Dados do formulário:', foodData);
+
+        try {
+            const response = await axios.post('http://localhost:8080/foods', foodData);
+            setFoodList(prev => [...prev, response.data]);
+            onSuccess(response.data);
+        } catch (error) {
+            console.error('Erro ao enviar requisição:', error);
+            onError(error);
+        }
     };
 
     const getTotalCartAmount = () => {
@@ -93,11 +105,9 @@ const StoreContextProvider = (props) => {
 
     const contextValue = {
         foodList,
-        cartItems,
-        setCartItems,
-        cartItemList,
-        addToCart,
-        removeFromCart,
+        deleteProduct,
+        updateProduct,
+        addFood,
         getTotalCartAmount,
         getTotalCartItems,
         categories,
@@ -105,10 +115,10 @@ const StoreContextProvider = (props) => {
     };
 
     return (
-        <StoreContext.Provider value={contextValue}>
+        <AdmContext.Provider value={contextValue}>
             {props.children}
-        </StoreContext.Provider>
+        </AdmContext.Provider>
     );
 };
 
-export default StoreContextProvider;
+export default AdmContextProvider;
