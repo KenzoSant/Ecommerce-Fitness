@@ -58,6 +58,7 @@ const AdmContextProvider = (props) => {
 
     const updateProduct = async (updatedItem) => {
         try {
+            console.log("Atualiza:",updatedItem);
             const response = await axios.put(`http://localhost:8080/foods/${updatedItem.id}`, updatedItem);
             setFoodList((prev) => prev.map(item => (item.id === updatedItem.id ? response.data : item)));
         } catch (error) {
@@ -65,18 +66,24 @@ const AdmContextProvider = (props) => {
         }
     };
 
-    const addFood = async (formData, selectedIngredientIds, onSuccess, onError) => {
+    const addFood = async (formData, categoryId, selectedIngredientIds, onSuccess, onError) => {
+        if (isNaN(categoryId)) {
+            console.error('Category ID is not a valid number');
+            // Tratar o erro de forma apropriada, como interromper o envio da solicitação ou fornecer feedback ao usuário
+            return;
+        }
+        
         const foodData = {
             name: formData.name,
             price: parseFloat(formData.price),
             kcal: parseInt(formData.kcal),
-            id_CategoryFood: parseInt(formData.category),
+            id_CategoryFood: categoryId, // Usar o categoryId em vez de formData.category
             ingredients: selectedIngredientIds.map(id => ({ id: parseInt(id) })),
             url_image: formData.image ? formData.image.name : '',
         };
-
+    
         console.log('Dados do formulário:', foodData);
-
+    
         try {
             const response = await axios.post('http://localhost:8080/foods', foodData);
             setFoodList(prev => [...prev, response.data]);

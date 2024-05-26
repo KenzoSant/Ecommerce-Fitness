@@ -47,37 +47,53 @@ function List() {
   const handleSaveChanges = () => {
     // Transforma a lista de IDs de ingredientes em uma lista de objetos contendo apenas o ID
     const editedIngredientObjects = editedIngredients.map(id => ({ id }));
-
+  
+    // Filtrar os ingredientes novos adicionados
+    const newIngredients = editedIngredientObjects.filter(ingredient => typeof ingredient.id === 'string');
+  
+    // Transformar os IDs dos ingredientes existentes de volta para números
+    const existingIngredients = editedIngredientObjects.filter(ingredient => typeof ingredient.id === 'number');
+  
     const updatedItem = {
-        ...selectedItem,
-        name: editedName,
-        price: editedPrice,
-        ingredients: editedIngredientObjects // Define a lista de ingredientes conforme a transformação
+      ...selectedItem,
+      name: editedName,
+      price: editedPrice,
+      ingredients: [...existingIngredients, ...newIngredients] // Adicionar novos ingredientes aos existentes
     };
-
+  
     updateProduct(updatedItem);
     setShowEditScreen(false);
     setSelectedItem(null);
-};
-
-
-
+  };
+  
   const handleAddIngredient = () => {
     if (selectedIngredient.trim() !== '') {
       const ingredientId = parseInt(selectedIngredient);
       if (!isNaN(ingredientId)) {
-        setEditedIngredients([...editedIngredients, ingredientId]);
+        // Verificar se o ingrediente já está na lista de ingredientes editados
+        if (!editedIngredients.includes(ingredientId)) {
+          setEditedIngredients([...editedIngredients, ingredientId]);
+        }
       } else {
         console.error('O ID do ingrediente não é um número válido.');
       }
       setSelectedIngredient('');
     }
   };
+  
 
   const ingredientOptions = ingredients.map(ingredient => ({
     value: ingredient.id,
-    label: ingredient.name
+    label: ingredient.name // Aqui estamos usando o nome do ingrediente em vez do ID
   }));
+
+  const customStyles = {
+    control: (provided, state) => ({
+      ...provided,
+      border: '1.5px solid var(--second-color-green)',
+      borderRadius: '10px' 
+    })
+  };
 
   return (
     <div className="list">
@@ -102,8 +118,10 @@ function List() {
         <div className="confirmation-overlay">
           <div className="confirmation-box">
             <p>Deseja excluir o produto?</p>
-            <button className="btn" onClick={handleConfirmDelete}>Sim</button>
-            <button className="btn" onClick={handleCancelDelete}>Não</button>
+            <div className="list-button">
+              <button className="btn" onClick={handleConfirmDelete}>Sim</button>
+              <button className="btn" onClick={handleCancelDelete}>Não</button>
+            </div>
           </div>
         </div>
       )}
@@ -127,19 +145,20 @@ function List() {
                   onChange={(e) => setEditedPrice(e.target.value)}
                 />
                 <span>Ingredientes:</span>
-                <Select className='select-ing'
+                <Select
                   isMulti
-                  value={editedIngredients.map(ingredientId => ({ value: ingredientId, label: ingredientId }))}
+                  value={editedIngredients.map(ingredientId => ({ value: ingredientId, label: ingredientOptions.find(option => option.value === ingredientId)?.label || "" }))}
                   onChange={(selectedOptions) => {
                     setEditedIngredients(selectedOptions.map(option => option.value));
                   }}
                   options={ingredientOptions}
+                  styles={customStyles}
                 />
               </div>
             </div>
             <div className="list-button">
-              <button className="btn" onClick={handleSaveChanges}>Salvar</button>
-              <button className="btn" onClick={handleCloseEditScreen}>Fechar</button>
+              <button className="btn btn-list" onClick={handleSaveChanges}>Salvar</button>
+              <button className="btn btn-list" onClick={handleCloseEditScreen}>Fechar</button>
             </div>
           </div>
         </div>

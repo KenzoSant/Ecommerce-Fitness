@@ -2,37 +2,21 @@ import React, { useState, useContext } from 'react';
 import './Add.css';
 import { assets } from '../../assets/assets';
 import { AdmContext } from '../../context/AdmContext';
+import Select from 'react-select';
 
 const Add = () => {
   const { categories, ingredients, addFood } = useContext(AdmContext);
-  const [selectedIngredientIds, setSelectedIngredientIds] = useState([]);
-  const [selectedIngredient, setSelectedIngredient] = useState('');
+  const [selectedCategory, setSelectedCategory] = useState('');
+  const [selectedIngredients, setSelectedIngredients] = useState([]);
   const [formData, setFormData] = useState({
     name: '',
     price: '',
     kcal: '',
-    category: '',
+    category: '', // Remove this line
     description: '',
     image: null
   });
   const [successMessage, setSuccessMessage] = useState('');
-
-  const handleIngredientChange = (e, index) => {
-    const newIngredientIds = [...selectedIngredientIds];
-    newIngredientIds[index] = e.target.value;
-    setSelectedIngredientIds(newIngredientIds);
-  };
-
-  const handleAddIngredient = () => {
-    setSelectedIngredientIds([...selectedIngredientIds, selectedIngredient]);
-    setSelectedIngredient('');
-  };
-
-  const handleRemoveIngredient = (index) => {
-    const newIngredientIds = [...selectedIngredientIds];
-    newIngredientIds.splice(index, 1);
-    setSelectedIngredientIds(newIngredientIds);
-  };
 
   const handleChange = (e) => {
     if (e.target.name === 'image') {
@@ -51,22 +35,43 @@ const Add = () => {
       name: '',
       price: '',
       kcal: '',
-      category: '',
       description: '',
       image: null
     });
-    setSelectedIngredientIds([]);
+    setSelectedCategory(null); // Reset selected category to null
+    setSelectedIngredients([]);
     setSuccessMessage('Cadastrado com sucesso!');
     setTimeout(() => setSuccessMessage(''), 3000);
+  };
+  
+
+  const handleCategoryChange = (selectedOption) => {
+    console.log("selectedOption:", selectedOption);
+    setSelectedCategory(selectedOption.value); // Update state with selected category ID
+    setFormData({ ...formData, category: selectedOption.label }); // Set category label in form data
+  };
+
+  const handleIngredientsChange = (selectedOptions) => {
+    console.log("selectedOptions:", selectedOptions);
+    const selectedIngredientIds = selectedOptions.map(option => option.value);
+    setSelectedIngredients(selectedIngredientIds);
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    await addFood(formData, selectedCategory, selectedIngredients, handleSuccess, handleError); // pass selectedCategory diretamente
   };
 
   const handleError = (error) => {
     console.error('Error adding food:', error);
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    await addFood(formData, selectedIngredientIds, handleSuccess, handleError);
+  const customStyles = {
+    control: (provided) => ({
+      ...provided,
+      border: '1.5px solid var(--second-color-green)',
+      borderRadius: '10px'
+    })
   };
 
   return (
@@ -97,41 +102,30 @@ const Add = () => {
 
         <div className="add-product-category flex-col class">
           <p>Product Category</p>
-          <select name="category" value={formData.category} onChange={handleChange} required>
-            <option value="" disabled className="placeholder-option">Choose a category</option>
-            {categories.map((category, index) => (
-              <option key={index} value={category.id}>{category.name}</option>
-            ))}
-          </select>
-        </div>
+          <Select
+            options={categories.map(category => ({ value: category.id, label: category.name }))}
+            value={selectedCategory ? { value: selectedCategory, label: categories.find(category => category.id === selectedCategory).name } : null}
+            onChange={handleCategoryChange}
+            placeholder="Select Category"
+            required
+            isClearable
+            styles={customStyles}
+          />
 
-        <div className="add-product-category flex-col class">
-          <p>Product Ingredients</p>
-          <select
-            name="ingredients"
-            value={selectedIngredient}
-            onChange={(e) => setSelectedIngredient(e.target.value)}
-          >
-            <option value="" disabled className="placeholder-option">Choose an ingredient</option>
-            {ingredients.map((ingredient, index) => (
-              <option key={index} value={ingredient.id}>{ingredient.name}</option>
-            ))}
-          </select>
+
         </div>
 
         <div className="add-product-ingredients flex-col class">
-          {selectedIngredientIds.map((ingredientId, index) => (
-            <div key={index} className="ingredient-input class">
-              <input
-                type="text"
-                placeholder={`Ingredient ${index + 1}`}
-                value={ingredientId || ''}
-                onChange={(e) => handleIngredientChange(e, index)}
-              />
-              <button type="button" className='rem-ing' onClick={() => handleRemoveIngredient(index)}>Remove</button>
-            </div>
-          ))}
-          <button type="button" onClick={handleAddIngredient} className='add-ing'>Add Ingredient</button>
+          <p>Product Ingredients</p>
+          <Select
+            isMulti
+            options={ingredients.map(ingredient => ({ value: ingredient.id, label: ingredient.name }))}
+            value={selectedIngredients.map(id => ({ value: id, label: ingredients.find(ingredient => ingredient.id === id).name }))}
+            onChange={handleIngredientsChange}
+            placeholder="Select Ingredients"
+            isClearable
+            styles={customStyles}
+          />
         </div>
 
         <div className="add-product-description flex-col class">
