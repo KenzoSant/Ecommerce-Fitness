@@ -10,6 +10,7 @@ const AdmContextProvider = (props) => {
     const [categories, setCategories] = useState([]);
     const [ingredients, setIngredients] = useState([]);
 
+
     useEffect(() => {
         const fetchFoodList = async () => {
             try {
@@ -60,26 +61,22 @@ const AdmContextProvider = (props) => {
         try {
             console.log("Atualiza:",updatedItem);
             const response = await axios.put(`http://localhost:8080/foods/${updatedItem.id}`, updatedItem);
-            setFoodList((prev) => prev.map(item => (item.id === updatedItem.id ? response.data : item)));
+            setFoodList((prevFoodList) =>
+                prevFoodList.map((item) => (item.id === updatedItem.id ? updatedItem : item))
+            );
         } catch (error) {
             console.error('Erro ao atualizar produto:', error);
         }
     };
 
     const addFood = async (formData, categoryId, selectedIngredientIds, onSuccess, onError) => {
-        if (isNaN(categoryId)) {
-            console.error('Category ID is not a valid number');
-            // Tratar o erro de forma apropriada, como interromper o envio da solicitação ou fornecer feedback ao usuário
-            return;
-        }
-        
         const foodData = {
             name: formData.name,
             price: parseFloat(formData.price),
             kcal: parseInt(formData.kcal),
-            id_CategoryFood: categoryId, // Usar o categoryId em vez de formData.category
+            id_CategoryFood: categoryId, 
             ingredients: selectedIngredientIds.map(id => ({ id: parseInt(id) })),
-            url_image: formData.image ? formData.image.name : '',
+            url_image: formData.image ? `${formData.image.name}?${new Date().getTime()}` : '', // Forçar atualização da imagem
         };
     
         console.log('Dados do formulário:', foodData);
@@ -93,7 +90,7 @@ const AdmContextProvider = (props) => {
             onError(error);
         }
     };
-
+    
     const getTotalCartAmount = () => {
         let totalAmount = 0;
         cartItemList.forEach(item => {

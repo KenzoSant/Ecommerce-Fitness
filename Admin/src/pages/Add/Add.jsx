@@ -4,7 +4,7 @@ import { assets } from '../../assets/assets';
 import { AdmContext } from '../../context/AdmContext';
 import Select from 'react-select';
 
-const Add = () => {
+const Add = ({ setShowAddForm }) => {
   const { categories, ingredients, addFood } = useContext(AdmContext);
   const [selectedCategory, setSelectedCategory] = useState('');
   const [selectedIngredients, setSelectedIngredients] = useState([]);
@@ -42,8 +42,10 @@ const Add = () => {
     setSelectedIngredients([]);
     setSuccessMessage('Cadastrado com sucesso!');
     setTimeout(() => setSuccessMessage(''), 3000);
+
+    setFoodList(prev => [...prev, data]);
   };
-  
+
 
   const handleCategoryChange = (selectedOption) => {
     console.log("selectedOption:", selectedOption);
@@ -59,7 +61,7 @@ const Add = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    await addFood(formData, selectedCategory, selectedIngredients, handleSuccess, handleError); // pass selectedCategory diretamente
+    await addFood(formData, selectedCategory, selectedIngredients, handleSuccess, handleError);
   };
 
   const handleError = (error) => {
@@ -75,7 +77,9 @@ const Add = () => {
   };
 
   return (
-    <div className="add">
+    <div className="add-screen">
+      <div className="add-box">
+      <h1>Cadastros</h1>
       <form onSubmit={handleSubmit} className='flex-col'>
         <div className="add-img-upload flex-col">
           <p>Upload Image</p>
@@ -83,21 +87,6 @@ const Add = () => {
             <img src={formData.image ? URL.createObjectURL(formData.image) : assets.upload_area} alt="" />
           </label>
           <input type="file" id='image' name="image" onChange={handleChange} hidden required />
-        </div>
-
-        <div className="add-product-name flex-col class">
-          <p>Product Name</p>
-          <input type="text" name='name' value={formData.name} onChange={handleChange} placeholder='Type Here' required />
-        </div>
-
-        <div className="add-product-price flex-col class">
-          <p>Product Price</p>
-          <input type="number" name='price' value={formData.price} onChange={handleChange} placeholder='Type Here' required />
-        </div>
-
-        <div className="add-product-kcal flex-col class">
-          <p>Product Kcal</p>
-          <input type="number" name='kcal' value={formData.kcal} onChange={handleChange} placeholder='Type Here' required />
         </div>
 
         <div className="add-product-category flex-col class">
@@ -111,8 +100,11 @@ const Add = () => {
             isClearable
             styles={customStyles}
           />
+        </div>
 
-
+        <div className="add-product-name flex-col class">
+          <p>Product Name</p>
+          <input type="text" name='name' value={formData.name} onChange={handleChange} placeholder='Type Here' required />
         </div>
 
         <div className="add-product-ingredients flex-col class">
@@ -128,14 +120,29 @@ const Add = () => {
           />
         </div>
 
+        <div className="add-product-price flex-col class">
+          <p>Product Price</p>
+          <input type="number" name='price' value={formData.price} onChange={handleChange} placeholder='Type Here' required />
+        </div>
+
         <div className="add-product-description flex-col class">
           <p>Product Description</p>
-          <textarea name='description' value={formData.description} onChange={handleChange} rows='5' placeholder='Type Here' required />
+          <textarea name='description' value={formData.description} onChange={handleChange} rows='1' placeholder='Type Here' required />
+        </div>
+
+        <div className="add-product-kcal flex-col class">
+          <p>Product Kcal</p>
+          <input type="number" name='kcal' value={formData.kcal} onChange={handleChange} placeholder='Type Here' required />
         </div>
 
         {successMessage && <p className="success-message">{successMessage}</p>}
-        <button type="submit" className="add-btn erclass">ADD</button>
+
       </form>
+      <div className="list-button">
+        <button type="submit" className="add-btn erclass">ADD</button>
+        <button type="button" className="add-btn erclass" onClick={() => setShowAddForm(false)}>Close</button>
+      </div>
+      </div>
     </div>
   );
 };

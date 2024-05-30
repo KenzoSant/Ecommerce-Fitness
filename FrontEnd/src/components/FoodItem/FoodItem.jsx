@@ -23,7 +23,7 @@ const FoodItem = ({ id, name, description, price, image }) => {
                 <div className="food-item-name-rating">
                     <p>{name}</p>
                     {/* Se houver rating no objeto de item de comida, você pode mostrá-lo aqui */}
-                    <img src={assets.rating_starts} alt="" />
+                    {/* <img src={assets.rating_starts} alt="" /> */}
                 </div>
                 <p className="food-item-desc">{description}</p>
                 <p className="food-item-price">R${price}</p>

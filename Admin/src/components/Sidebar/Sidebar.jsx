@@ -6,11 +6,11 @@ import { NavLink } from 'react-router-dom'
 const Sidebar = () => {
   return (
     <div className="sidebar">
+      <div className="sidebar-emp">
+        <img src={assets.michelano} alt="" />
+        <p>FitFood.</p>
+      </div>
       <div className="sidebar-options">
-        <NavLink to='/add' className="sidebar-option">
-          <img src={assets.add_icon} alt="" />
-          <p>Add Items</p>
-        </NavLink> 
         <NavLink to='/addusers' className="sidebar-option">
           <img src={assets.add_icon} alt="" />
           <p>Add Users</p>

@@ -1,18 +1,37 @@
-.add{
-    width: 70%;
-    margin-left: max(5vw,25px);
-    margin-top: 50px;
-    color: var(--primary-color-dark);
-    font-size: 16px;
+.add-screen {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow-y: auto;
 }
-.add form{
-    gap: 20px;
+
+.add-box {
+    background-color: white;
+    padding: 20px;
+    border-radius: 5px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    text-align: left;
+    max-width: 600px;
+    width: 100%;
 }
+
+.add-box form{
+    display: grid;
+    grid-template-columns:repeat(2, 1fr); /* 1 coluna por padrão */
+    grid-gap: 20px;
+}
+
 .add-img-upload img{
-    width: 120px;
+    width: 100px;
 }
 .class{
-    width: max(40%,280px);
+    width: max(40%,250px);
 }
 
 .placeholder-option {
@@ -46,47 +65,41 @@ select:invalid option[value=""] {
     border-radius: 10px;
     border: 1.5px solid var(--second-color-green);
 }
+
 .ingredient-input input{
     margin-right: 1rem;
 }
-.add-btn,
-.rem-ing{
-    max-width: 120px;
-    border: none;
-    padding: 10px;
-    background-color: var(--second-color-green);
-    color: var(--primary-color-white);
-    cursor: pointer;
-    border-radius: 10px;
-    transition: .5s;
-}
-.add-btn{
-    margin-bottom: 1rem;
+
+.list-button {
+    display: flex;
+    justify-content: center;
+    padding: 1rem 0 1rem;
+    gap: 2rem;
 }
 
-.add-ing{
+.add-btn{
     border: none;
     padding: 10px;
     background-color: var(--second-color-green);
     color: var(--primary-color-white);
     cursor: pointer;
     border-radius: 10px;
-    transition: .5s;
+    transition: 0.5s;
+    width: 100%;
 }
-.add-ing:hover,
-.add-ing:focus{
-    box-shadow: inset 28em 0 0 0 var(--second-color-orange);
-    transition: .6s;
-    color: #f5f6fa;
-}
+
 .add-btn:hover,
-.add-btn:focus,
-.rem-ing:hover,
-.rem-ing:focus{
-  box-shadow: inset 13em 0 0 0 var(--second-color-orange);
+.add-btn:focus{
+  box-shadow: inset 20em 0 0 0 var(--second-color-orange);
   transition: .5s;
   color: #f5f6fa;
 }
 .success-message{
     margin: 1rem;
+}
+
+@media screen and (min-width: 768px) {
+    .add form {
+        grid-template-columns: repeat(2, 1fr); /* 2 colunas */
+    }
 }
