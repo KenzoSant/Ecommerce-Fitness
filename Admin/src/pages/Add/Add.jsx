@@ -12,7 +12,7 @@ const Add = ({ setShowAddForm }) => {
     name: '',
     price: '',
     kcal: '',
-    category: '', // Remove this line
+    category: '', 
     description: '',
     image: null
   });
@@ -42,19 +42,14 @@ const Add = ({ setShowAddForm }) => {
     setSelectedIngredients([]);
     setSuccessMessage('Cadastrado com sucesso!');
     setTimeout(() => setSuccessMessage(''), 3000);
-
-    setFoodList(prev => [...prev, data]);
   };
 
-
   const handleCategoryChange = (selectedOption) => {
-    console.log("selectedOption:", selectedOption);
     setSelectedCategory(selectedOption.value); // Update state with selected category ID
     setFormData({ ...formData, category: selectedOption.label }); // Set category label in form data
   };
 
   const handleIngredientsChange = (selectedOptions) => {
-    console.log("selectedOptions:", selectedOptions);
     const selectedIngredientIds = selectedOptions.map(option => option.value);
     setSelectedIngredients(selectedIngredientIds);
   };
@@ -137,11 +132,11 @@ const Add = ({ setShowAddForm }) => {
 
         {successMessage && <p className="success-message">{successMessage}</p>}
 
+        <div className="list-button">
+          <button type="submit" className="add-btn erclass">ADD</button>
+          <button type="button" className="add-btn erclass" onClick={() => setShowAddForm(false)}>Close</button>
+        </div>
       </form>
-      <div className="list-button">
-        <button type="submit" className="add-btn erclass">ADD</button>
-        <button type="button" className="add-btn erclass" onClick={() => setShowAddForm(false)}>Close</button>
-      </div>
       </div>
     </div>
   );

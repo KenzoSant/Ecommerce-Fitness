@@ -50,8 +50,6 @@ function List() {
                 <img src={item.image} alt={item.name} className="food-image" />
                 <div className="food-details">
                   <h3>{item.name}</h3>  
-                  <p>Price: R${item.price}</p>
-                  <p>Ingredients: {item.ingredients.map(ing => ing.name).join(', ')}</p>
                 </div>
                 <div className='list-button principal'>
                   <button className="btn" onClick={() => handleEditClick(item)}>Editar</button>

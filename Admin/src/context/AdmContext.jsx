@@ -79,7 +79,7 @@ const AdmContextProvider = (props) => {
             url_image: formData.image ? `${formData.image.name}?${new Date().getTime()}` : '', // Forçar atualização da imagem
         };
     
-        console.log('Dados do formulário:', foodData);
+        console.log('Dados do formulário:', formData);
     
         try {
             const response = await axios.post('http://localhost:8080/foods', foodData);
