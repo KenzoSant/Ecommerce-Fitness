@@ -5,7 +5,7 @@ import { assets } from '../../assets/assets';
 import Add from '../Add/Add';
 import Alter from '../Alter/Alter';
 
-function List() {
+const List = () =>{
   const { foodList } = useContext(AdmContext);
   const [showAddForm, setShowAddForm] = useState(false); 
   const [currentPage, setCurrentPage] = useState(1);

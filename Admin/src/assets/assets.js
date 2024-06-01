@@ -6,6 +6,8 @@ import michelano from './michelano.jpeg'
 import upload_area from './upload_area.png'
 import parcel_icon from './parcel_icon.png'
 import plus from './plus.png'
+import login_img from './login_img.jpg'
+import logout_icon from './logout_icon.png'
 
 export const assets ={
     FitFood,
@@ -15,7 +17,9 @@ export const assets ={
     michelano,
     upload_area,
     parcel_icon,
-    plus
+    plus,
+    login_img,
+    logout_icon
 }
 
 export const url = 'http://localhost:4000'

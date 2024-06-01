@@ -1,5 +1,6 @@
-import { createContext, useState, useEffect } from 'react';
+import React, { createContext, useState, useEffect } from 'react';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 
 export const AdmContext = createContext(null);
 
@@ -9,7 +10,10 @@ const AdmContextProvider = (props) => {
     const [cartItemList, setCartItemList] = useState([]);
     const [categories, setCategories] = useState([]);
     const [ingredients, setIngredients] = useState([]);
-
+    const [admin, setAdmin] = useState(null);
+    const [isLoggedIn, setIsLoggedIn] = useState(!!localStorage.getItem('isLoggedIn'));
+    const [users, setUsers] = useState([]);
+    const navigate = useNavigate();
 
     useEffect(() => {
         const fetchFoodList = async () => {
@@ -43,10 +47,59 @@ const AdmContextProvider = (props) => {
             }
         };
 
+        const fetchUsers = async () => {
+            try {
+                const response = await axios.get('http://localhost:8080/employees');
+                setUsers(response.data);
+            } catch (error) {
+                console.error('Erro ao buscar usuários:', error);
+            }
+        };
+
+        const storedIsLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
+        const storedAdmin = JSON.parse(localStorage.getItem('admin'));
+        setIsLoggedIn(storedIsLoggedIn);
+        setAdmin(storedAdmin);
+
         fetchFoodList();
         fetchCategories();
         fetchIngredients();
+        fetchUsers();
     }, []);
+
+    const loginAdmin = async (email, password) => {
+        try {
+            const response = await axios.post('http://localhost:8080/employees/auth/login', {
+                email,
+                password
+            });
+            setAdmin(response.data);
+            setIsLoggedIn(true);
+            localStorage.setItem('isLoggedIn', 'true');
+            localStorage.setItem('admin', JSON.stringify(response.data));
+            navigate('/list');
+            return response.data;
+        } catch (error) {
+            throw error;
+        }
+    };
+
+    const logout = () => {
+        setAdmin(null);
+        setIsLoggedIn(false);
+        localStorage.removeItem('isLoggedIn');
+        localStorage.removeItem('admin');
+        navigate('/login');
+    };
+
+    const registerEmployee = async (employeeData) => {
+        try {
+            const response = await axios.post('http://localhost:8080/employees/auth/register', employeeData);
+            setUsers((prevUsers) => [...prevUsers, response.data]);
+        } catch (error) {
+            throw error;
+        }
+    };
 
     const deleteProduct = async (itemId) => {
         try {
@@ -57,9 +110,18 @@ const AdmContextProvider = (props) => {
         }
     };
 
+    const updateEmployee = async (updatedEmployee) => {
+        await axios.put(`http://localhost:8080/employees/${updatedEmployee.id}`, updatedEmployee);
+        fetchUsers();
+    };
+
+    const deleteEmployee = async (id) => {
+        await axios.delete(`http://localhost:8080/employees/${id}`);
+        fetchUsers();
+    };
+
     const updateProduct = async (updatedItem) => {
         try {
-            console.log("Atualiza:",updatedItem);
             const response = await axios.put(`http://localhost:8080/foods/${updatedItem.id}`, updatedItem);
             setFoodList((prevFoodList) =>
                 prevFoodList.map((item) => (item.id === updatedItem.id ? updatedItem : item))
@@ -74,13 +136,11 @@ const AdmContextProvider = (props) => {
             name: formData.name,
             price: parseFloat(formData.price),
             kcal: parseInt(formData.kcal),
-            id_CategoryFood: categoryId, 
+            id_CategoryFood: categoryId,
             ingredients: selectedIngredientIds.map(id => ({ id: parseInt(id) })),
             url_image: formData.image ? `${formData.image.name}?${new Date().getTime()}` : '', // Forçar atualização da imagem
         };
-    
-        console.log('Dados do formulário:', formData);
-    
+
         try {
             const response = await axios.post('http://localhost:8080/foods', foodData);
             setFoodList(prev => [...prev, response.data]);
@@ -90,7 +150,7 @@ const AdmContextProvider = (props) => {
             onError(error);
         }
     };
-    
+
     const getTotalCartAmount = () => {
         let totalAmount = 0;
         cartItemList.forEach(item => {
@@ -116,6 +176,14 @@ const AdmContextProvider = (props) => {
         getTotalCartItems,
         categories,
         ingredients,
+        loginAdmin,
+        registerEmployee,
+        deleteEmployee,
+        updateEmployee,
+        admin,
+        isLoggedIn,
+        users,
+        logout,
     };
 
     return (

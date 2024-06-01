@@ -30,13 +30,7 @@ const LoginPopup = ({ setShowLogin }) => {
                 await registerUser({
                     name: formData.name,
                     email: formData.email,
-                    document: '00000000000001',
-                    phone: '00000000001',
-                    password: formData.password,
-                    type: {
-                        id: "1",
-                        name: "CLIENTE_NORMAL"
-                    }
+                    password: formData.password
                 });
                 setShowLogin(false);
             } catch (error) {

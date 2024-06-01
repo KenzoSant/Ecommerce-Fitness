@@ -55,6 +55,53 @@
     color: var(--second-color-green);
 }
 
+.sidebar-logoff{
+    position:absolute;
+    bottom:0;
+}
+
+.sidebar-logoff img{
+    width: 30px;
+    margin: 1rem;   
+    cursor: pointer;
+}
+
+.logout-confirmation {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: white;
+    padding: 20px;
+    border-radius: 15px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    z-index: 1;
+    text-align: center;
+  }
+  
+  .logout-confirmation p{
+    margin-bottom: 10px;
+    font-size: 16px;
+  }
+  
+  .logout-confirmation button {
+    background: none;
+    border: none;
+    padding: 10px;
+    text-align: center;
+    cursor: pointer;
+    color: var(--primary-color-white);
+    background-color: var(--second-color-green);
+    margin: 15px;
+    transition: .3s;
+    width: 30%;
+    border-radius: 15px;
+  }
+
+  .logout-confirmation button:hover{
+    background-color: var(--second-color-orange);
+  }
+
 @media (max-width:900px){
     .sidebar-option p{
         display: none;

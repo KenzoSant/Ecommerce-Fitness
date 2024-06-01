@@ -84,19 +84,13 @@ const StoreContextProvider = (props) => {
         return totalItems;
     };
 
-    const registerUser = async ({ name, email, document, phone, password }) => {
-        console.log('Registering user with data:', { name, email, document, phone, password });
+    const registerUser = async ({ name, email, password }) => {
+        console.log('Registering user with data:', { name, email, password });
         try {
             const response = await axios.post('http://localhost:8080/clients/auth/register', {
                 name,
                 email,
-                document,
-                phone,
                 password,
-                type: {
-                    id: "1",
-                    name: "CLIENTE_NORMAL"
-                }
             });
             console.log('Registration successful:', response.data);
             setIsLoggedIn(true);
@@ -109,7 +103,7 @@ const StoreContextProvider = (props) => {
     };
 
     const loginUser = async (email, password) => {
-        console.log('Logging in user with email:', email);
+        console.log('Logging in user with email:', email, password);
         try {
             const response = await axios.post('http://localhost:8080/clients/auth/login', {
                 email,
