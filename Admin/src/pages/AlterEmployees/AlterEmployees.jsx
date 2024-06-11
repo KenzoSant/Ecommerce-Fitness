@@ -4,7 +4,7 @@ import './AlterEmployees.css';
 import { AdmContext } from '../../context/AdmContext';
 
 const AlterEmployees = ({ employee, onClose }) => {
-  const { updateEmployee, deleteEmployee, roles } = useContext(AdmContext);
+  const { updateEmployee, deleteEmployee, roles = [] } = useContext(AdmContext);
   const [editedName, setEditedName] = useState(employee.name);
   const [editedEmail, setEditedEmail] = useState(employee.email);
   const [editedRole, setEditedRole] = useState(employee.role);
