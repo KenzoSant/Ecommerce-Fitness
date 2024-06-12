@@ -12,11 +12,11 @@ const Add = ({ setShowAddForm }) => {
     name: '',
     price: '',
     kcal: '',
-    category: '', 
+    category: '',
     description: '',
     image: null
   });
-  const [successMessage, setSuccessMessage] = useState('');
+    const [success, setSuccess] = useState('');
 
   const handleChange = (e) => {
     if (e.target.name === 'image') {
@@ -40,8 +40,8 @@ const Add = ({ setShowAddForm }) => {
     });
     setSelectedCategory(null); // Reset selected category to null
     setSelectedIngredients([]);
-    setSuccessMessage('Cadastrado com sucesso!');
-    setTimeout(() => setSuccessMessage(''), 3000);
+    setSuccess('Cadastrado com sucesso!');
+    setTimeout(() => setSuccess(''), 3000);
   };
 
   const handleCategoryChange = (selectedOption) => {
@@ -74,69 +74,70 @@ const Add = ({ setShowAddForm }) => {
   return (
     <div className="add-screen">
       <div className="add-box">
-      <h1>Cadastros</h1>
-      <form onSubmit={handleSubmit} className='flex-col'>
-        <div className="add-img-upload flex-col">
-          <p>Upload Image</p>
-          <label htmlFor="image">
-            <img src={formData.image ? URL.createObjectURL(formData.image) : assets.upload_area} alt="" />
-          </label>
-          <input type="file" id='image' name="image" onChange={handleChange} hidden required />
-        </div>
+        <h1>Cadastros</h1>
+        <form onSubmit={handleSubmit}>
+          <div className="add-img-upload flex-col">
+            <p>Upload Image</p>
+            <label htmlFor="image">
+              <img src={formData.image ? URL.createObjectURL(formData.image) : assets.upload_area} alt="" />
+            </label>
+            <input type="file" id='image' name="image" onChange={handleChange} hidden  />
+          </div>
 
-        <div className="add-product-category flex-col class">
-          <p>Product Category</p>
-          <Select
-            options={categories.map(category => ({ value: category.id, label: category.name }))}
-            value={selectedCategory ? { value: selectedCategory, label: categories.find(category => category.id === selectedCategory).name } : null}
-            onChange={handleCategoryChange}
-            placeholder="Select Category"
-            required
-            isClearable
-            styles={customStyles}
-          />
-        </div>
+          <div className="add-product-category flex-col class">
+            <p>Product Category</p>
+            <Select
+              options={categories.map(category => ({ value: category.id, label: category.name }))}
+              value={selectedCategory ? { value: selectedCategory, label: categories.find(category => category.id === selectedCategory).name } : null}
+              onChange={handleCategoryChange}
+              placeholder="Select Category"
+              required
+              isClearable
+              styles={customStyles}
+            />
+          </div>
 
-        <div className="add-product-name flex-col class">
-          <p>Product Name</p>
-          <input type="text" name='name' value={formData.name} onChange={handleChange} placeholder='Type Here' required />
-        </div>
+          <div className="add-product-name flex-col class">
+            <p>Product Name</p>
+            <input type="text" name='name' value={formData.name} onChange={handleChange} placeholder='Type Here' required />
+          </div>
 
-        <div className="add-product-ingredients flex-col class">
-          <p>Product Ingredients</p>
-          <Select
-            isMulti
-            options={ingredients.map(ingredient => ({ value: ingredient.id, label: ingredient.name }))}
-            value={selectedIngredients.map(id => ({ value: id, label: ingredients.find(ingredient => ingredient.id === id).name }))}
-            onChange={handleIngredientsChange}
-            placeholder="Select Ingredients"
-            isClearable
-            styles={customStyles}
-          />
-        </div>
+          <div className="add-product-ingredients flex-col class">
+            <p>Product Ingredients</p>
+            <Select
+              isMulti
+              options={ingredients.map(ingredient => ({ value: ingredient.id, label: ingredient.name }))}
+              value={selectedIngredients.map(id => ({ value: id, label: ingredients.find(ingredient => ingredient.id === id).name }))}
+              onChange={handleIngredientsChange}
+              placeholder="Select Ingredients"
+              isClearable
+              styles={customStyles}
+            />
+          </div>
 
-        <div className="add-product-price flex-col class">
-          <p>Product Price</p>
-          <input type="number" name='price' value={formData.price} onChange={handleChange} placeholder='Type Here' required />
-        </div>
+          <div className="add-product-price flex-col class">
+            <p>Product Price</p>
+            <input type="number" name='price' value={formData.price} onChange={handleChange} placeholder='Type Here' required />
+          </div>
 
-        <div className="add-product-description flex-col class">
-          <p>Product Description</p>
-          <textarea name='description' value={formData.description} onChange={handleChange} rows='1' placeholder='Type Here' required />
-        </div>
+          <div className="add-product-description flex-col class">
+            <p>Product Description</p>
+            <textarea name='description' value={formData.description} onChange={handleChange} rows='1' placeholder='Type Here' required />
+          </div>
 
-        <div className="add-product-kcal flex-col class">
-          <p>Product Kcal</p>
-          <input type="number" name='kcal' value={formData.kcal} onChange={handleChange} placeholder='Type Here' required />
-        </div>
+          <div className="add-product-kcal flex-col class">
+            <p>Product Kcal</p>
+            <input type="number" name='kcal' value={formData.kcal} onChange={handleChange} placeholder='Type Here' required />
+          </div>
 
-        {successMessage && <p className="success-message">{successMessage}</p>}
+          <div className="add-product-kcal flex-col class">
+          </div>
 
-        <div className="list-button">
-          <button type="submit" className="add-btn erclass">ADD</button>
-          <button type="button" className="add-btn erclass" onClick={() => setShowAddForm(false)}>Close</button>
-        </div>
-      </form>
+          {success && <p className="success-message">{success}</p>}
+
+          <button type="submit" className="add-btn ">ADD</button>
+          <button type="button" className="add-btn " onClick={() => setShowAddForm(false)}>Close</button>
+        </form>
       </div>
     </div>
   );

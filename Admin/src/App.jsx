@@ -23,7 +23,6 @@ const App = () => {
                             <Routes>
                                 <Route path='/list' element={<PrivateRoute element={List} />} />
                                 <Route path='/orders' element={<PrivateRoute element={Orders} />} />
-                                <Route path='/add-employees' element={<PrivateRoute element={AddEmployees} />} />
                                 <Route path='/list-employees' element={<PrivateRoute element={ListEmployees} />} />
                                 <Route path="*" element={<Navigate to="/list" />} />
                             </Routes>

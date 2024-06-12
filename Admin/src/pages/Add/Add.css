@@ -70,13 +70,6 @@ select:invalid option[value=""] {
     margin-right: 1rem;
 }
 
-.list-button {
-    display: flex;
-    justify-content: center;
-    padding: 1rem 0 1rem;
-    gap: 2rem;
-}
-
 .add-btn{
     border: none;
     padding: 10px;
@@ -90,7 +83,7 @@ select:invalid option[value=""] {
 
 .add-btn:hover,
 .add-btn:focus{
-  box-shadow: inset 20em 0 0 0 var(--second-color-orange);
+  box-shadow: inset 21em 0 0 0 var(--second-color-orange);
   transition: .5s;
   color: #f5f6fa;
 }

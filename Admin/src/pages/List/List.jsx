@@ -51,7 +51,7 @@ const List = () =>{
                 <div className="food-details">
                   <h3>{item.name}</h3>  
                 </div>
-                <div className='list-button principal'>
+                <div className='principal'>
                   <button className="btn" onClick={() => handleEditClick(item)}>Editar</button>
                 </div>
               </div>
@@ -80,7 +80,7 @@ const List = () =>{
           </button>
         ))}
       </div>
-      <button className="add-foods" onClick={() => setShowAddForm(true)}>
+      <button className="add" onClick={() => setShowAddForm(true)}>
         <img src={assets.plus} alt="Add Foods" />
       </button>
     </div>

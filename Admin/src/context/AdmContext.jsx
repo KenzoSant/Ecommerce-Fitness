@@ -93,6 +93,7 @@ const AdmContextProvider = (props) => {
     };
 
     const registerEmployee = async (employeeData) => {
+        console.log("cad:", employeeData);
         try {
             const response = await axios.post('http://localhost:8080/employees/auth/register', employeeData);
             setUsers((prevUsers) => [...prevUsers, response.data]);
@@ -111,13 +112,21 @@ const AdmContextProvider = (props) => {
     };
 
     const updateEmployee = async (updatedEmployee) => {
-        await axios.put(`http://localhost:8080/employees/${updatedEmployee.id}`, updatedEmployee);
-        fetchUsers();
+        try {
+            const response = await axios.put(`http://localhost:8080/employees/${updatedEmployee.id}`, updatedEmployee);
+            setUsers((prevUsers) => prevUsers.map(user => user.id === updatedEmployee.id ? updatedEmployee : user));
+        } catch (error) {
+            throw error;
+        }
     };
 
     const deleteEmployee = async (id) => {
-        await axios.delete(`http://localhost:8080/employees/${id}`);
-        fetchUsers();
+        try {
+            await axios.delete(`http://localhost:8080/employees/${id}`);
+            setUsers((prevUsers) => prevUsers.filter(user => user.id !== id));
+        } catch (error) {
+            throw error;
+        }
     };
 
     const updateProduct = async (updatedItem) => {
@@ -183,7 +192,7 @@ const AdmContextProvider = (props) => {
         admin,
         isLoggedIn,
         users,
-        logout,
+        logout
     };
 
     return (

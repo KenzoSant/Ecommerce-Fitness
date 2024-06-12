@@ -1,18 +1,22 @@
 import React, { useContext, useState } from 'react';
 import './ListEmployees.css';
 import { AdmContext } from "../../context/AdmContext";
-import AlterEmployees from '../AlterEmployees/AlterEmployees'; // Import the modal component
+import AlterEmployees from '../AlterEmployees/AlterEmployees'; 
+import AddEmployees from '../AddEmployees/AddEmployees'; 
+import { assets } from '../../assets/assets';
 
 const ListEmployees = () => {
-    const { users } = useContext(AdmContext);
+    const { users, deleteEmployee, updateEmployee, registerEmployee } = useContext(AdmContext);
     const [searchTerm, setSearchTerm] = useState('');
     const [currentPage, setCurrentPage] = useState(1);
     const [selectedEmployee, setSelectedEmployee] = useState(null);
+    const [showAddForm, setShowAddForm] = useState(false);
 
     const itemsPerPage = 6;
 
-    const filteredUsers = users.filter(user =>
-        user.name.toLowerCase().includes(searchTerm.toLowerCase())
+    // Ensure users is defined and is an array
+    const filteredUsers = (users || []).filter(user => 
+        user.name && user.name.toLowerCase().includes(searchTerm.toLowerCase())
     );
 
     const totalPages = Math.ceil(filteredUsers.length / itemsPerPage);
@@ -26,6 +30,15 @@ const ListEmployees = () => {
     };
 
     const currentUsers = filteredUsers.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
+
+    const handleDelete = async (userId) => {
+        await deleteEmployee(userId);
+    };
+
+    const handleAddEmployee = async (employeeData) => {
+        await registerEmployee(employeeData);
+        setShowAddForm(false); // Close the form after adding an employee
+    };
 
     return (
         <div className="list">
@@ -62,6 +75,9 @@ const ListEmployees = () => {
                     onClose={() => setSelectedEmployee(null)}
                 />
             )}
+            {showAddForm && (
+                <AddEmployees onAdd={handleAddEmployee} setShowAddForm={setShowAddForm} />
+            )}
             <div className="pagination">
                 {Array.from({ length: totalPages }, (_, index) => (
                     <button
@@ -73,6 +89,9 @@ const ListEmployees = () => {
                     </button>
                 ))}
             </div>
+            <button className="add" onClick={() => setShowAddForm(true)}>
+                <img src={assets.plus} alt="Add Employee" />
+            </button>
         </div>
     );
 };
