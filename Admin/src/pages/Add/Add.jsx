@@ -5,7 +5,7 @@ import { AdmContext } from '../../context/AdmContext';
 import Select from 'react-select';
 
 const Add = ({ setShowAddForm }) => {
-  const { categories, ingredients, addFood } = useContext(AdmContext);
+  const { categories, ingredients, addFood, addFoodImage } = useContext(AdmContext);
   const [selectedCategory, setSelectedCategory] = useState('');
   const [selectedIngredients, setSelectedIngredients] = useState([]);
   const [formData, setFormData] = useState({
@@ -16,7 +16,7 @@ const Add = ({ setShowAddForm }) => {
     description: '',
     image: null
   });
-    const [success, setSuccess] = useState('');
+  const [notification, setNotification] = useState({ message: '', type: '' });
 
   const handleChange = (e) => {
     if (e.target.name === 'image') {
@@ -38,15 +38,21 @@ const Add = ({ setShowAddForm }) => {
       description: '',
       image: null
     });
-    setSelectedCategory(null); // Reset selected category to null
+    setSelectedCategory(null);
     setSelectedIngredients([]);
-    setSuccess('Cadastrado com sucesso!');
-    setTimeout(() => setSuccess(''), 3000);
+    setNotification({ message: 'Cadastrado com sucesso!', type: 'success' });
+    setTimeout(() => setNotification({ message: '', type: '' }), 2000);
+  };
+
+  const handleError = (error) => {
+    console.error('Error adding food:', error);
+    setNotification({ message: 'Erro ao cadastrar!', type: 'error' });
+    setTimeout(() => setNotification({ message: '', type: '' }), 2000);
   };
 
   const handleCategoryChange = (selectedOption) => {
-    setSelectedCategory(selectedOption.value); // Update state with selected category ID
-    setFormData({ ...formData, category: selectedOption.label }); // Set category label in form data
+    setSelectedCategory(selectedOption.value);
+    setFormData({ ...formData, category: selectedOption.label });
   };
 
   const handleIngredientsChange = (selectedOptions) => {
@@ -56,11 +62,15 @@ const Add = ({ setShowAddForm }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    await addFood(formData, selectedCategory, selectedIngredients, handleSuccess, handleError);
-  };
-
-  const handleError = (error) => {
-    console.error('Error adding food:', error);
+    try {
+      const foodResponse = await addFood(formData, selectedCategory, selectedIngredients, handleSuccess, handleError);
+      if (formData.image) {
+        const imageResponse = await addFoodImage(formData.image, handleSuccess, handleError);
+      }
+    } catch (error) {
+      console.error('Error:', error);
+      handleError(error);
+    }
   };
 
   const customStyles = {
@@ -81,7 +91,7 @@ const Add = ({ setShowAddForm }) => {
             <label htmlFor="image">
               <img src={formData.image ? URL.createObjectURL(formData.image) : assets.upload_area} alt="" />
             </label>
-            <input type="file" id='image' name="image" onChange={handleChange} hidden  />
+            <input type="file" id='image' name="image" onChange={handleChange} hidden />
           </div>
 
           <div className="add-product-category flex-col class">
@@ -133,10 +143,14 @@ const Add = ({ setShowAddForm }) => {
           <div className="add-product-kcal flex-col class">
           </div>
 
-          {success && <p className="success-message">{success}</p>}
+          {notification.message && (
+            <div className={`notification ${notification.type}`}>
+              {notification.message}
+            </div>
+          )}
 
-          <button type="submit" className="add-btn ">ADD</button>
-          <button type="button" className="add-btn " onClick={() => setShowAddForm(false)}>Close</button>
+          <button type="submit" className="add-btn">ADD</button>
+          <button type="button" className="add-btn" onClick={() => setShowAddForm(false)}>Close</button>
         </form>
       </div>
     </div>

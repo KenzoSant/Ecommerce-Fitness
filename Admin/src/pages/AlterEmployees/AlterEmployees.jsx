@@ -4,22 +4,34 @@ import './AlterEmployees.css';
 import { AdmContext } from '../../context/AdmContext';
 
 const AlterEmployees = ({ employee, onClose }) => {
-  const { updateEmployee, deleteEmployee, roles = [] } = useContext(AdmContext);
+  const { updateEmployee, deleteEmployee } = useContext(AdmContext);
   const [editedName, setEditedName] = useState(employee.name);
   const [editedEmail, setEditedEmail] = useState(employee.email);
+  const [editedGender, setEditedGender] = useState(employee.gender);
+  const [editedBirthDate, setEditedBirthDate] = useState(employee.birthDate);
+  const [editedPhone, setEditedPhone] = useState(employee.phone);
+  const [editedCpf, setEditedCpf] = useState(employee.cpf);
+  const [editedPassword, setEditedPassword] = useState(employee.password);
   const [editedRole, setEditedRole] = useState(employee.role);
   const [showConfirmation, setShowConfirmation] = useState(false);
+  const [notification, setNotification] = useState({ message: '', type: '' });
 
   useEffect(() => {
     setEditedName(employee.name);
     setEditedEmail(employee.email);
+    setEditedGender(employee.gender);
+    setEditedBirthDate(employee.birthDate);
+    setEditedPhone(employee.phone);
+    setEditedCpf(employee.cpf);
+    setEditedPassword(employee.password);
     setEditedRole(employee.role);
   }, [employee]);
 
-  const roleOptions = roles.map(role => ({
-    value: role,
-    label: role,
-  }));
+  const roleOptions = [
+    { value: 'ADMINISTRADOR', label: 'ADMINISTRADOR' },
+    { value: 'COZINHEIRO', label: 'COZINHEIRO' },
+    { value: 'ENTREGADOR', label: 'ENTREGADOR' }
+  ];
 
   const customStyles = {
     control: (provided) => ({
@@ -29,29 +41,49 @@ const AlterEmployees = ({ employee, onClose }) => {
     }),
   };
 
+  const showNotification = (message, type) => {
+    setNotification({ message, type });
+    setTimeout(() => setNotification({ message: '', type: '' }), 2000);
+  };
+
   const handleDeleteClick = () => {
     setShowConfirmation(true);
   };
 
-  const handleConfirmDelete = () => {
-    deleteEmployee(employee.id);
+  const handleConfirmDelete = async () => {
+    try {
+      await deleteEmployee(employee.id);
+      showNotification('Funcionário removido com sucesso!', 'success');
+      onClose();
+    } catch (error) {
+      showNotification('Erro ao remover funcionário', 'error');
+    }
     setShowConfirmation(false);
-    onClose();
   };
 
   const handleCancelDelete = () => {
     setShowConfirmation(false);
   };
 
-  const handleSaveChanges = () => {
+  const handleSaveChanges = async () => {
     const updatedEmployee = {
       ...employee,
       name: editedName,
       email: editedEmail,
+      gender: editedGender,
+      birthDate: editedBirthDate,
+      phone: editedPhone,
+      cpf: editedCpf,
+      password: editedPassword,
       role: editedRole,
     };
-    updateEmployee(updatedEmployee);
-    onClose();
+    try {
+      await updateEmployee(updatedEmployee);
+      showNotification('Alterações salvas com sucesso!', 'success');
+      onClose();
+    } catch (error) {
+      showNotification('Erro ao salvar alterações', 'error');
+    }
   };
 
   const handleRoleChange = (selectedOption) => {
@@ -63,19 +95,63 @@ const AlterEmployees = ({ employee, onClose }) => {
       <div className="edit-box">
         <h2>Edit Employee</h2>
         <div className="edit-box-info">
-          <div className="list-info">
+          <div className="flex-col class">
             <span>Name:</span>
             <input
               type="text"
               value={editedName}
               onChange={(e) => setEditedName(e.target.value)}
             />
+          </div>
+          <div className="flex-col class">
             <span>Email:</span>
             <input
               type="email"
               value={editedEmail}
               onChange={(e) => setEditedEmail(e.target.value)}
             />
+          </div>
+          <div className="flex-col class">
+            <span>Gender:</span>
+            <input
+              type="text"
+              value={editedGender}
+              onChange={(e) => setEditedGender(e.target.value)}
+            />
+          </div>
+          <div className="flex-col class">
+            <span>Birth Date:</span>
+            <input
+              type="date"
+              value={editedBirthDate}
+              onChange={(e) => setEditedBirthDate(e.target.value)}
+            />
+          </div>
+          <div className="flex-col class">
+            <span>Phone:</span>
+            <input
+              type="text"
+              value={editedPhone}
+              onChange={(e) => setEditedPhone(e.target.value)}
+            />
+          </div>
+          <div className="flex-col class">
+            <span>CPF:</span>
+            <input
+              type="text"
+              value={editedCpf}
+              onChange={(e) => setEditedCpf(e.target.value)}
+            />
+          </div>
+          <div className="flex-col class">
+            <span>Password:</span>
+            <input
+              type="password"
+              value={editedPassword}
+              onChange={(e) => setEditedPassword(e.target.value)}
+            />
+          </div>
+          <div className="flex-col class">
             <span>Role:</span>
             <Select
               value={roleOptions.find(option => option.value === editedRole)}
@@ -93,12 +169,17 @@ const AlterEmployees = ({ employee, onClose }) => {
         {showConfirmation && (
           <div className="confirmation-overlay">
             <div className="confirmation-box">
-              <p>Do you want to delete this employee?</p>
+              <p>Deseja remover esse funcionário?</p>
               <div className="list-button">
                 <button className="btn" onClick={handleConfirmDelete}>Yes</button>
                 <button className="btn" onClick={handleCancelDelete}>No</button>
               </div>
             </div>
+          </div>
+        )}
+        {notification.message && (
+          <div className={`notification ${notification.type}`}>
+            {notification.message}
           </div>
         )}
       </div>

@@ -160,6 +160,27 @@ const AdmContextProvider = (props) => {
         }
     };
 
+    const addFoodImage = async (imageFile, onSuccess, onError) => {
+        const imageData = new FormData();
+        imageData.append('image', imageFile);
+    
+        try {
+            const response = await fetch('http://localhost:3000/upload', {
+                method: 'POST',
+                body: imageData
+            });
+            if (!response.ok) {
+                throw new Error('Erro ao fazer upload da imagem');
+            }
+            const responseData = await response.json();
+            onSuccess(responseData);
+        } catch (error) {
+            console.error('Erro ao enviar requisição:', error);
+            onError(error);
+        }
+    };
+    
+
     const getTotalCartAmount = () => {
         let totalAmount = 0;
         cartItemList.forEach(item => {
@@ -181,6 +202,7 @@ const AdmContextProvider = (props) => {
         deleteProduct,
         updateProduct,
         addFood,
+        addFoodImage,
         getTotalCartAmount,
         getTotalCartItems,
         categories,
