@@ -31,13 +31,7 @@
     box-sizing: border-box;
 }
 
-.edit-box-info {
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-start;
-}
-
-.edit-box-info img {
+.box img {
     max-width: 30%;
     border-radius: 15px;
     margin-right: 20px;
@@ -48,23 +42,6 @@
     justify-content: center;
     padding: 1rem 0 1rem;
     gap: 2rem;
-}
-
-.list-info {
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-start;
-    width: 100%;
-    text-align: left;
-}
-
-.list-info span {
-    margin-top: 5px;
-}
-
-.list-info input {
-    border-radius: 10px;
-    border: 1.5px solid var(--second-color-green);
 }
 
 .confirmation-overlay {

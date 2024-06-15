@@ -141,15 +141,20 @@ const AdmContextProvider = (props) => {
     };
 
     const addFood = async (formData, categoryId, selectedIngredientIds, onSuccess, onError) => {
+        // Obtendo a data e hora atual
+        const now = new Date();
+        // Formatando a data e hora no formato desejado
+        const formattedDateTime = `${now.getFullYear()}-${(now.getMonth() + 1).toString().padStart(2, '0')}-${now.getDate().toString().padStart(2, '0')}-${now.getHours().toString().padStart(2, '0')}-${now.getMinutes().toString().padStart(2, '0')}`;
         const foodData = {
             name: formData.name,
             price: parseFloat(formData.price),
             kcal: parseInt(formData.kcal),
             id_CategoryFood: categoryId,
             ingredients: selectedIngredientIds.map(id => ({ id: parseInt(id) })),
-            url_image: formData.image ? `${formData.image.name}?${new Date().getTime()}` : '', // Forçar atualização da imagem
+            // Adicionando data e hora formatadas ao nome da imagem
+            url_image: formData.image ? `${formattedDateTime}_${formData.image.name}` : '', // Forçar atualização da imagem
         };
-
+    
         try {
             const response = await axios.post('http://localhost:8080/foods', foodData);
             setFoodList(prev => [...prev, response.data]);
@@ -159,6 +164,7 @@ const AdmContextProvider = (props) => {
             onError(error);
         }
     };
+    
 
     const addFoodImage = async (imageFile, onSuccess, onError) => {
         const imageData = new FormData();

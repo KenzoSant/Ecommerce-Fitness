@@ -3,6 +3,28 @@ import Select from 'react-select';
 import './AlterEmployees.css';
 import { AdmContext } from '../../context/AdmContext';
 
+const Notification = ({ message, type }) => {
+  return (
+    <div className={`notification ${type}`}>
+      {message}
+    </div>
+  );
+};
+
+const ConfirmationDialog = ({ onConfirm, onCancel }) => {
+  return (
+    <div className="confirmation-overlay">
+      <div className="confirmation-box">
+        <p>Deseja remover esse funcionário?</p>
+        <div className="list-button">
+          <button className="btn" onClick={onConfirm}>Yes</button>
+          <button className="btn" onClick={onCancel}>No</button>
+        </div>
+      </div>
+    </div>
+  );
+};
+
 const AlterEmployees = ({ employee, onClose }) => {
   const { updateEmployee, deleteEmployee } = useContext(AdmContext);
   const [editedName, setEditedName] = useState(employee.name);
@@ -91,10 +113,10 @@ const AlterEmployees = ({ employee, onClose }) => {
   };
 
   return (
-    <div className="edit-screen">
-      <div className="edit-box">
+    <div className="screen">
+      <div className="box">
         <h2>Edit Employee</h2>
-        <div className="edit-box-info">
+        <div className="list-info">
           <div className="flex-col class">
             <span>Name:</span>
             <input
@@ -167,20 +189,16 @@ const AlterEmployees = ({ employee, onClose }) => {
           <button className="btn btn-list" onClick={onClose}>Close</button>
         </div>
         {showConfirmation && (
-          <div className="confirmation-overlay">
-            <div className="confirmation-box">
-              <p>Deseja remover esse funcionário?</p>
-              <div className="list-button">
-                <button className="btn" onClick={handleConfirmDelete}>Yes</button>
-                <button className="btn" onClick={handleCancelDelete}>No</button>
-              </div>
-            </div>
-          </div>
+          <ConfirmationDialog
+            onConfirm={handleConfirmDelete}
+            onCancel={handleCancelDelete}
+          />
         )}
         {notification.message && (
-          <div className={`notification ${notification.type}`}>
-            {notification.message}
-          </div>
+          <Notification
+            message={notification.message}
+            type={notification.type}
+          />
         )}
       </div>
     </div>

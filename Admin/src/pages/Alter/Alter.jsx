@@ -3,6 +3,28 @@ import Select from 'react-select';
 import './Alter.css';
 import { AdmContext } from '../../context/AdmContext';
 
+const Notification = ({ message, type }) => {
+  return (
+    <div className={`notification ${type}`}>
+      {message}
+    </div>
+  );
+};
+
+const ConfirmationDialog = ({ onConfirm, onCancel }) => {
+  return (
+    <div className="confirmation-overlay">
+      <div className="confirmation-box">
+        <p>Do you want to delete the product?</p>
+        <div className="list-button">
+          <button className="btn" onClick={onConfirm}>Yes</button>
+          <button className="btn" onClick={onCancel}>No</button>
+        </div>
+      </div>
+    </div>
+  );
+};
+
 const Alter = ({ item, onClose }) => {
   const { ingredients, categories, deleteProduct, updateProduct } = useContext(AdmContext);
   const [editedName, setEditedName] = useState(item.name);
@@ -11,7 +33,7 @@ const Alter = ({ item, onClose }) => {
   const [editedIngredients, setEditedIngredients] = useState(item.ingredients.map(ingredient => ingredient.id));
   const [selectedCategory, setSelectedCategory] = useState(item.id_CategoryFood);
   const [showConfirmation, setShowConfirmation] = useState(false);
-  
+  const [notification, setNotification] = useState({ message: '', type: '' });
 
   useEffect(() => {
     setEditedName(item.name);
@@ -39,21 +61,31 @@ const Alter = ({ item, onClose }) => {
     }),
   };
 
+  const showNotification = (message, type) => {
+    setNotification({ message, type });
+    setTimeout(() => setNotification({ message: '', type: '' }), 2000);
+  };
+
   const handleDeleteClick = () => {
     setShowConfirmation(true);
   };
 
-  const handleConfirmDelete = () => {
-    deleteProduct(item.id);
+  const handleConfirmDelete = async () => {
+    try {
+      await deleteProduct(item.id);
+      showNotification('Produto removido com sucesso!', 'success');
+      onClose();
+    } catch (error) {
+      showNotification('Erro ao remover produto', 'error');
+    }
     setShowConfirmation(false);
-    onClose();
   };
 
   const handleCancelDelete = () => {
     setShowConfirmation(false);
   };
 
-  const handleSaveChanges = () => {
+  const handleSaveChanges = async () => {
     const updatedItem = {
       ...item,
       name: editedName,
@@ -61,12 +93,13 @@ const Alter = ({ item, onClose }) => {
       id_CategoryFood: editedCategory,
       ingredients: editedIngredients.map(id => ({ id })),
     };
-    updateProduct(updatedItem);
-    onClose();
-  };
-
-  const handleAddIngredient = () => {
-    // Add ingredient logic
+    try {
+      await updateProduct(updatedItem);
+      showNotification('Alterações salvas com sucesso!', 'success');
+      onClose();
+    } catch (error) {
+      showNotification('Erro ao salvar alterações', 'error');
+    }
   };
 
   const handleCategoryChange = (selectedOption) => {
@@ -75,24 +108,30 @@ const Alter = ({ item, onClose }) => {
   };
 
   return (
-    <div className="edit-screen">
-      <div className="edit-box">
+    <div className="screen">
+      <div className="box">
         <h2>Edit Product</h2>
-        <div className="edit-box-info">
-          <img src={item.image} alt={item.name} />
-          <div className="list-info">
+        <img src={item.image} alt={item.name} />
+        <div className="list-info">
+          <div className="flex-col class">
             <span>Name:</span>
             <input
               type="text"
               value={editedName}
               onChange={(e) => setEditedName(e.target.value)}
             />
+          </div>
+
+          <div className="flex-col class">
             <span>Price:</span>
             <input
               type="text"
               value={editedPrice}
               onChange={(e) => setEditedPrice(e.target.value)}
             />
+          </div>
+
+          <div className="flex-col class">
             <span>Category:</span>
             <Select
               value={categoryOptions.find(option => option.value === selectedCategory)}
@@ -100,6 +139,9 @@ const Alter = ({ item, onClose }) => {
               options={categoryOptions}
               styles={customStyles}
             />
+          </div>
+
+          <div className="flex-col class">
             <span>Ingredients:</span>
             <Select
               isMulti
@@ -121,15 +163,16 @@ const Alter = ({ item, onClose }) => {
           <button className="btn btn-list" onClick={onClose}>Close</button>
         </div>
         {showConfirmation && (
-          <div className="confirmation-overlay">
-            <div className="confirmation-box">
-              <p>Do you want to delete the product?</p>
-              <div className="list-button">
-                <button className="btn" onClick={handleConfirmDelete}>Yes</button>
-                <button className="btn" onClick={handleCancelDelete}>No</button>
-              </div>
-            </div>
-          </div>
+          <ConfirmationDialog
+            onConfirm={handleConfirmDelete}
+            onCancel={handleCancelDelete}
+          />
+        )}
+        {notification.message && (
+          <Notification
+            message={notification.message}
+            type={notification.type}
+          />
         )}
       </div>
     </div>

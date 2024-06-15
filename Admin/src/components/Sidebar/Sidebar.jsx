@@ -27,10 +27,6 @@ const Sidebar = () => {
         <p>FitFood.</p>
       </div>
       <div className="sidebar-options">
-        <NavLink to='/add-employees' className="sidebar-option">
-          <img src={assets.add_icon} alt="" />
-          <p>Add Employees</p>
-        </NavLink>
         <NavLink to='/list' className="sidebar-option">
           <img src={assets.list_icon} alt="" />
           <p>List Items</p>

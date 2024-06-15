@@ -8,6 +8,7 @@ const Add = ({ setShowAddForm }) => {
   const { categories, ingredients, addFood, addFoodImage } = useContext(AdmContext);
   const [selectedCategory, setSelectedCategory] = useState('');
   const [selectedIngredients, setSelectedIngredients] = useState([]);
+  const [notification, setNotification] = useState({ message: '', type: '' });
   const [formData, setFormData] = useState({
     name: '',
     price: '',
@@ -16,7 +17,6 @@ const Add = ({ setShowAddForm }) => {
     description: '',
     image: null
   });
-  const [notification, setNotification] = useState({ message: '', type: '' });
 
   const handleChange = (e) => {
     if (e.target.name === 'image') {
@@ -63,9 +63,9 @@ const Add = ({ setShowAddForm }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const foodResponse = await addFood(formData, selectedCategory, selectedIngredients, handleSuccess, handleError);
+      await addFood(formData, selectedCategory, selectedIngredients, handleSuccess, handleError);
       if (formData.image) {
-        const imageResponse = await addFoodImage(formData.image, handleSuccess, handleError);
+        await addFoodImage(formData.image, handleSuccess, handleError);
       }
     } catch (error) {
       console.error('Error:', error);
@@ -82,8 +82,8 @@ const Add = ({ setShowAddForm }) => {
   };
 
   return (
-    <div className="add-screen">
-      <div className="add-box">
+    <div className="screen">
+      <div className="box">
         <h1>Cadastros</h1>
         <form onSubmit={handleSubmit}>
           <div className="add-img-upload flex-col">
@@ -132,7 +132,7 @@ const Add = ({ setShowAddForm }) => {
 
           <div className="add-product-description flex-col class">
             <p>Product Description</p>
-            <textarea name='description' value={formData.description} onChange={handleChange} rows='1' placeholder='Type Here' required />
+            <textarea name='description' value={formData.description} onChange={handleChange} rows='1' placeholder='Type Here'  />
           </div>
 
           <div className="add-product-kcal flex-col class">

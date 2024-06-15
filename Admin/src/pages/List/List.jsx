@@ -5,9 +5,9 @@ import { assets } from '../../assets/assets';
 import Add from '../Add/Add';
 import Alter from '../Alter/Alter';
 
-const List = () =>{
+const List = () => {
   const { foodList } = useContext(AdmContext);
-  const [showAddForm, setShowAddForm] = useState(false); 
+  const [showAddForm, setShowAddForm] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedItem, setSelectedItem] = useState(null);
@@ -43,21 +43,21 @@ const List = () =>{
       </div>
       <div className="container-list">
         <ul className="food-list">
-        {currentFoodList.map((item) => {
-          return (
-            <li key={item.id} className="food-item">
-              <div className="food-card">
-                <img src={item.image} alt={item.name} className="food-image" />
-                <div className="food-details">
-                  <h3>{item.name}</h3>  
+          {currentFoodList.map((item) => {
+            return (
+              <li key={item.id} className="food-item">
+                <div className="food-card">
+                  <img src={item.image} alt={item.name} className="food-image" />
+                  <div className="food-details">
+                    <h3>{item.name}</h3>
+                  </div>
+                  <div className='principal'>
+                    <button className="btn" onClick={() => handleEditClick(item)}>Editar</button>
+                  </div>
                 </div>
-                <div className='principal'>
-                  <button className="btn" onClick={() => handleEditClick(item)}>Editar</button>
-                </div>
-              </div>
-            </li>
-         )
-         })}
+              </li>
+            )
+          })}
         </ul>
       </div>
       {selectedItem && (
@@ -67,7 +67,7 @@ const List = () =>{
         />
       )}
       {showAddForm && (
-          <Add setShowAddForm={setShowAddForm}/>
+        <Add setShowAddForm={setShowAddForm} />
       )}
       <div className="pagination">
         {Array.from({ length: totalPages }, (_, index) => (

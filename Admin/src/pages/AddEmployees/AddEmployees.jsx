@@ -29,8 +29,8 @@ const AddEmployees = ({ setShowAddForm }) => {
     };
 
     return (
-        <div className="add-screen">
-            <div className="add-box">
+        <div className="screen">
+            <div className="box">
                 <h2>Cadastrar Funcionário</h2>
                 <form onSubmit={handleSubmit}>
                     <div className="flex-col class">
