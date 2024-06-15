@@ -8,6 +8,7 @@ import AddEmployees from './pages/AddEmployees/AddEmployees';
 import ListEmployees from './pages/ListEmployees/ListEmployees';
 import Login from './pages/Login/Login';
 import PrivateRoute from './context/PrivateRoute';
+import Dashboard from './pages/Dashboard/Dashboard';
 
 const App = () => {
     return (
@@ -24,6 +25,7 @@ const App = () => {
                                 <Route path='/list' element={<PrivateRoute element={List} />} />
                                 <Route path='/orders' element={<PrivateRoute element={Orders} />} />
                                 <Route path='/list-employees' element={<PrivateRoute element={ListEmployees} />} />
+                                <Route path='/dashboard' element={<PrivateRoute element={Dashboard} />} />
                                 <Route path="*" element={<Navigate to="/list" />} />
                             </Routes>
                         </div>

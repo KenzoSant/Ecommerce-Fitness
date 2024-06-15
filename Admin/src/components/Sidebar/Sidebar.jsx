@@ -39,6 +39,10 @@ const Sidebar = () => {
           <img src={assets.order_icon} alt="" />
           <p>Orders</p>
         </NavLink>
+        <NavLink to='/dashboard' className="sidebar-option">
+          <img src={assets.order_icon} alt="" />
+          <p>Dashboard</p>
+        </NavLink>
       </div>
       <div className="sidebar-logoff" onClick={handleLogout}>
         <img src={assets.logout_icon} alt="" />
