@@ -1,8 +1,7 @@
 import express from 'express';
 import multer from 'multer';
-import path from 'path';
 import cors from 'cors';
-
+import moment from 'moment-timezone';
 const app = express();
 const port = 3000;
 
@@ -21,13 +20,14 @@ const corsOptions = {
 
 app.use(cors(corsOptions));
 
+const brazilTime = moment.tz(Date.now(), 'America/Sao_Paulo').format('YYYY-MM-DD-HH-mm');
 
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
     cb(null, 'src/assets/');
   },
   filename: function (req, file, cb) {
-    cb(null, file.fieldname + '-' + Date.now() + path.extname(file.originalname));
+    cb(null, `${brazilTime}_${file.originalname}` );
   }
 });
 
