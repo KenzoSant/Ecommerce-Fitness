@@ -20,14 +20,17 @@ const corsOptions = {
 
 app.use(cors(corsOptions));
 
-const brazilTime = moment.tz(Date.now(), 'America/Sao_Paulo').format('YYYY-MM-DD-HH-mm');
 
-const storage = multer.diskStorage({
+
+const storage = multer.diskStorage(
+  {
+  
   destination: function (req, file, cb) {
     cb(null, 'src/assets/');
   },
   filename: function (req, file, cb) {
-    cb(null, `${brazilTime}_${file.originalname}` );
+    let brazilTime = moment.tz(Date.now(), 'America/Sao_Paulo').format('YYYY-MM-DD-HH-mm');
+    cb(null, `${brazilTime}_${file.originalname}`);
   }
 });
 

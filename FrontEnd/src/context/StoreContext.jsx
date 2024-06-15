@@ -10,8 +10,8 @@ const StoreContextProvider = (props) => {
     const [cartItemList, setCartItemList] = useState([]);
     const [isLoggedIn, setIsLoggedIn] = useState(!!localStorage.getItem('isLoggedIn'));
     const [userId, setUserId] = useState(localStorage.getItem('userId') || null);
-    const [userDetails, setUserDetails] = useState(null); // Definindo o estado para os detalhes do usuário
-
+    const [userDetails, setUserDetails] = useState(null); 
+    const [userOrders, setUserOrders] = useState([]); 
 
     useEffect(() => {
         const fetchFoodList = async () => {
@@ -147,7 +147,7 @@ const StoreContextProvider = (props) => {
 
     const fetchUserOrders = async (userId) => {
         try {
-            const response = await axios.get(`http://localhost:8080/orders?clientId=${userId}`);
+            const response = await axios.get(`http://localhost:8080/orders/client/${userId}`);
             setUserOrders(response.data);
         } catch (error) {
             console.error('Erro ao buscar pedidos:', error);
@@ -170,7 +170,8 @@ const StoreContextProvider = (props) => {
         isLoggedIn,
         userId,
         fetchUserOrders,
-        userDetails
+        userDetails,
+        userOrders,
     };
 
     return (

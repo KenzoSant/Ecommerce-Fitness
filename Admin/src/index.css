@@ -151,6 +151,10 @@ hr{
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
 }
 
+.pagination .btn{
+  background-color: var(--second-color-green);
+}
+
 @keyframes slide-in {
   from {
       opacity: 0;

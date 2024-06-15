@@ -13,6 +13,7 @@ const AdmContextProvider = (props) => {
     const [admin, setAdmin] = useState(null);
     const [isLoggedIn, setIsLoggedIn] = useState(!!localStorage.getItem('isLoggedIn'));
     const [users, setUsers] = useState([]);
+    const [orders, setOrders] = useState([]);
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -67,6 +68,15 @@ const AdmContextProvider = (props) => {
         fetchUsers();
     }, []);
 
+    const fetchOrders = async () => {
+        try {
+            const response = await axios.get('http://localhost:8080/orders');
+            setOrders(response.data);
+        } catch (error) {
+            console.error('Erro ao buscar pedidos:', error);
+        }
+    };
+
     const loginAdmin = async (email, password) => {
         try {
             const response = await axios.post('http://localhost:8080/employees/auth/login', {
@@ -93,7 +103,6 @@ const AdmContextProvider = (props) => {
     };
 
     const registerEmployee = async (employeeData) => {
-        console.log("cad:", employeeData);
         try {
             const response = await axios.post('http://localhost:8080/employees/auth/register', employeeData);
             setUsers((prevUsers) => [...prevUsers, response.data]);
@@ -113,7 +122,7 @@ const AdmContextProvider = (props) => {
 
     const updateEmployee = async (updatedEmployee) => {
         try {
-            const response = await axios.put(`http://localhost:8080/employees/${updatedEmployee.id}`, updatedEmployee);
+            await axios.put(`http://localhost:8080/employees/${updatedEmployee.id}`, updatedEmployee);
             setUsers((prevUsers) => prevUsers.map(user => user.id === updatedEmployee.id ? updatedEmployee : user));
         } catch (error) {
             throw error;
@@ -131,7 +140,7 @@ const AdmContextProvider = (props) => {
 
     const updateProduct = async (updatedItem) => {
         try {
-            const response = await axios.put(`http://localhost:8080/foods/${updatedItem.id}`, updatedItem);
+            await axios.put(`http://localhost:8080/foods/${updatedItem.id}`, updatedItem);
             setFoodList((prevFoodList) =>
                 prevFoodList.map((item) => (item.id === updatedItem.id ? updatedItem : item))
             );
@@ -141,9 +150,7 @@ const AdmContextProvider = (props) => {
     };
 
     const addFood = async (formData, categoryId, selectedIngredientIds, onSuccess, onError) => {
-        // Obtendo a data e hora atual
         const now = new Date();
-        // Formatando a data e hora no formato desejado
         const formattedDateTime = `${now.getFullYear()}-${(now.getMonth() + 1).toString().padStart(2, '0')}-${now.getDate().toString().padStart(2, '0')}-${now.getHours().toString().padStart(2, '0')}-${now.getMinutes().toString().padStart(2, '0')}`;
         const foodData = {
             name: formData.name,
@@ -151,10 +158,9 @@ const AdmContextProvider = (props) => {
             kcal: parseInt(formData.kcal),
             id_CategoryFood: categoryId,
             ingredients: selectedIngredientIds.map(id => ({ id: parseInt(id) })),
-            // Adicionando data e hora formatadas ao nome da imagem
-            url_image: formData.image ? `${formattedDateTime}_${formData.image.name}` : '', // Forçar atualização da imagem
+            url_image: formData.image ? `${formattedDateTime}_${formData.image.name}` : '',
         };
-    
+
         try {
             const response = await axios.post('http://localhost:8080/foods', foodData);
             setFoodList(prev => [...prev, response.data]);
@@ -164,12 +170,11 @@ const AdmContextProvider = (props) => {
             onError(error);
         }
     };
-    
 
     const addFoodImage = async (imageFile, onSuccess, onError) => {
         const imageData = new FormData();
         imageData.append('image', imageFile);
-    
+
         try {
             const response = await fetch('http://localhost:3000/upload', {
                 method: 'POST',
@@ -185,7 +190,15 @@ const AdmContextProvider = (props) => {
             onError(error);
         }
     };
-    
+
+    const updateOrderStatus = async (orderId, newStatus) => {
+        try {
+            await axios.put(`http://localhost:8080/orders/${orderId}`, { orderStage: newStatus });
+            setOrders((prevOrders) => prevOrders.map(order => order.id === orderId ? { ...order, orderStage: newStatus } : order));
+        } catch (error) {
+            console.error('Erro ao atualizar status do pedido:', error);
+        }
+    };
 
     const getTotalCartAmount = () => {
         let totalAmount = 0;
@@ -220,7 +233,10 @@ const AdmContextProvider = (props) => {
         admin,
         isLoggedIn,
         users,
-        logout
+        logout,
+        orders,
+        updateOrderStatus,
+        fetchOrders,
     };
 
     return (

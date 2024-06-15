@@ -1,40 +1,44 @@
 /* User.css */
-
 .user-profile {
-    width: 80%;
-    margin: 50px auto;
-    color: var(--primary-color-dark);
-    font-size: 16px;
-  }
-  
-  .user-info {
-    text-align: center;
-    margin-bottom: 30px;
-  }
-  
-  .user-image {
-    width: 150px;
-    height: 150px;
-    border-radius: 50%;
-    object-fit: cover;
-    margin-bottom: 20px;
-  }
-  
-  .user-orders {
-    margin-top: 20px;
-  }
-  
-  .user-orders ul {
-    list-style-type: none;
-    padding: 0;
-  }
-  
-  .user-orders li {
-    border-bottom: 1px solid #ccc;
-    padding: 10px 0;
-  }
-  
-  .user-orders h4 {
-    margin: 0 0 10px;
-  }
-  
+  width: 80%;
+  margin: 50px auto;
+  color: var(--primary-color-dark);
+  font-size: 16px;
+}
+.user-info-img{
+  text-align: center;
+}
+.user-info {
+  text-align: flex start;
+  margin-bottom: 30px;
+}
+.user-info-end{
+  display: grid;
+  grid-template-columns:repeat(2, 1fr); /* 1 coluna por padrão */
+}
+
+.user-image {
+  width: 150px;
+  height: 150px;
+  border-radius: 50%;
+  object-fit: cover;
+  margin-bottom: 20px;
+}
+
+.user-orders {
+  margin-top: 20px;
+}
+
+.user-orders ul {
+  list-style-type: none;
+  padding: 0;
+}
+
+.user-orders li {
+  border-bottom: 1px solid #ccc;
+  padding: 10px 0;
+}
+
+.user-orders h4 {
+  margin: 0 0 10px;
+}

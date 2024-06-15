@@ -7,7 +7,7 @@ import { StoreContext } from '../../context/StoreContext';
 const Navbar = ({ setShowLogin }) => {
   const [menu, setMenu] = useState("home");
   const [showLogout, setShowLogout] = useState(false);
-  const { isLoggedIn, logoutUser, getTotalCartAmount, getTotalCartItems, userName } = useContext(StoreContext);
+  const { isLoggedIn, logoutUser, getTotalCartAmount, getTotalCartItems } = useContext(StoreContext);
   const navigate = useNavigate();
 
   const handleLogoutClick = () => {
@@ -67,7 +67,6 @@ const Navbar = ({ setShowLogin }) => {
             <img className="user-icon" src={assets.profile_icon} alt="User Icon" onClick={() => setShowLogout(!showLogout)} />
             {showLogout && (
               <div className="logout-menu">
-                <p>Olá, {userName}</p> {/* Exibir o nome do usuário */}
                 <button onClick={handleProfileClick}>Perfil</button>
                 <button onClick={handleLogoutClick}>Sair</button>
               </div>
