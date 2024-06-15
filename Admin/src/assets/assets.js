@@ -8,6 +8,7 @@ import parcel_icon from './parcel_icon.png'
 import plus from './plus.png'
 import login_img from './login_img.jpg'
 import logout_icon from './logout_icon.png'
+import dashboard from './dashboard.png'
 
 export const assets ={
     FitFood,
@@ -19,7 +20,8 @@ export const assets ={
     parcel_icon,
     plus,
     login_img,
-    logout_icon
+    logout_icon,
+    dashboard
 }
 
 export const url = 'http://localhost:4000'

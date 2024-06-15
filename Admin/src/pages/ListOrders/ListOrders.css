@@ -1,0 +1,152 @@
+.list {
+    width: 80%;
+    margin: 50px auto;
+    color: var(--primary-color-dark);
+    font-size: 16px;
+}
+
+.search-bar {
+    margin: 1rem;
+    display: flex;
+    justify-content: start;
+}
+
+.search-bar input {
+    width: 100%;
+    padding: 10px;
+    border: 1.5px solid var(--second-color-green);
+    border-radius: 10px;
+    font-size: 16px;
+}
+
+.container-list {
+    margin: 1rem;
+    display: flex;
+    justify-content: center;
+}
+
+.order-list {
+    width: 100%;
+    list-style: none;
+    padding: 0;
+}
+
+.order-item {
+    display: flex;
+    align-items: center;
+    border-bottom: 1px solid #ccc;
+    padding: 10px 0;
+}
+
+.order-card {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    transition: transform 0.3s;
+    border-radius: 15px;
+}
+
+.order-card:hover {
+    transform: translateY(-5px);
+}
+
+.order-details {
+    flex-grow: 1;
+    padding: 20px;
+}
+
+.order-details h3 {
+    margin: 0 0 10px;
+    font-size: 18px;
+    color: var(--primary-color-dark);
+}
+
+.order-details p {
+    margin: 5px 0;
+    font-size: 14px;
+    color: var(--primary-color-light);
+}
+
+.order-status {
+    display: inline-block;
+    font-weight: bold;
+}
+
+/* Status Colors */
+.status-blue {
+    color: blue;
+}
+
+.status-orange {
+    color: orange;
+}
+
+.status-purple {
+    color: purple;
+}
+
+.status-green {
+    color: green;
+}
+
+.status-red {
+    color: red;
+}
+
+.principal {
+    padding: 20px;
+}
+
+.principal .btn {
+    background-color: var(--second-color-green);
+    color: #fff;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.principal .btn:hover {
+    background-color: var(--primary-color-dark);
+}
+
+.pagination {
+    display: flex;
+    justify-content: center;
+    margin: 20px 0;
+}
+
+.pagination .btn {
+    background-color: var(--primary-color-dark);
+    color: #fff;
+    border: none;
+    padding: 10px 20px;
+    margin: 0 5px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.pagination .btn:hover {
+    background-color: var(--second-color-green);
+}
+
+.pagination .btn.active {
+    background-color: var(--second-color-green);
+}
+
+/* Responsive Styles */
+@media screen and (max-width: 1024px) {
+    .order-item {
+        flex-basis: calc(50% - 20px);
+    }
+}
+
+@media screen and (max-width: 768px) {
+    .order-item {
+        flex-basis: calc(100% - 20px);
+    }
+}

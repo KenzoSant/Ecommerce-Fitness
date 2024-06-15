@@ -7,11 +7,8 @@ import Orders from './pages/Orders/Orders';
 import ListEmployees from './pages/ListEmployees/ListEmployees';
 import Login from './pages/Login/Login';
 import PrivateRoute from './context/PrivateRoute';
-<<<<<<< Updated upstream
 import Dashboard from './pages/Dashboard/Dashboard';
-=======
 import ListOrders from './pages/ListOrders/ListOrders';
->>>>>>> Stashed changes
 
 const App = () => {
     return (
