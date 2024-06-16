@@ -32,6 +32,11 @@ const AlterEmployees = ({ employee, onClose }) => {
     return `${year}-${month}-${day}`;
   };
 
+  const formatDateToBR = (dateString) => {
+    const [year, month, day] = dateString.split('-');
+    return `${day}/${month}/${year}`;
+  };
+
   const roleOptions = [
     { value: 'ADMINISTRADOR', label: 'ADMINISTRADOR' },
     { value: 'COZINHEIRO', label: 'COZINHEIRO' },
@@ -73,13 +78,14 @@ const AlterEmployees = ({ employee, onClose }) => {
       name: editedName,
       email: editedEmail,
       gender: editedGender,
-      birthDate: editedBirthDate,
+      birthDate: formatDateToBR(editedBirthDate),
       phone: editedPhone,
       cpf: editedCpf,
       password: editedPassword,
       role: editedRole,
     };
     try {
+      console.log("EMPPL",updatedEmployee);
       await updateEmployee(updatedEmployee);
       setNotification({ message: 'Alterado com sucesso!', type: 'success' });
       setTimeout(() => setNotification({ message: '', type: '' }), 2000);
@@ -147,14 +153,14 @@ const AlterEmployees = ({ employee, onClose }) => {
               onChange={(e) => setEditedCpf(e.target.value)}
             />
           </div>
-          {/* <div className="flex-col class">
+          <div className="flex-col class">
             <span>Password:</span>
             <input
               type="password"
               value={editedPassword}
               onChange={(e) => setEditedPassword(e.target.value)}
             />
-          </div> */}
+          </div>
           <div className="flex-col class">
             <span>Role:</span>
             <Select
@@ -182,10 +188,10 @@ const AlterEmployees = ({ employee, onClose }) => {
           </div>
         )}
         {notification.message && (
-                        <div className={`notification ${notification.type}`}>
-                            {notification.message}
-                        </div>
-                    )}
+          <div className={`notification ${notification.type}`}>
+            {notification.message}
+          </div>
+        )}
       </div>
     </div>
   );

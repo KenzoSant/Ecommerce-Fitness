@@ -9,20 +9,20 @@ const LineChart = () => {
     const fetchData = async () => {
       try {
         const response = await axios.get('http://localhost:8080/dashboard');
-        const data = response.data;     
-       
+        const data = response.data;
+
         const ctx = chartRef.current.getContext('2d');
 
-    
+
         new Chart(ctx, {
           type: 'line',
           data: {
-            labels: ['Jan', 'Fev','Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez'], 
+            labels: ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez'],
             datasets: [{
               label: 'Numero de pedidos por mês',
-              data: data, 
-              borderColor: 'rgba(255, 99, 132, 0.9)', 
-              backgroundColor: 'rgba(255, 99, 132, 0.2)', 
+              data: data,
+              borderColor: '#f6a40c',
+              backgroundColor: '#f6a40c',
               borderWidth: 2,
               pointRadius: 7,
               pointHoverRadius: 15
@@ -33,7 +33,7 @@ const LineChart = () => {
               y: {
                 beginAtZero: true,
                 ticks: {
-                  callback: function(value) {
+                  callback: function (value) {
                     if (value % 1 === 0) {
                       return value;
                     }
@@ -49,14 +49,18 @@ const LineChart = () => {
       }
     };
 
-    fetchData(); 
+    fetchData();
 
-  }, []); 
+  }, []);
 
   return (
-    <div style={{ width: '80%', height: '100%' }}>
-      <canvas ref={chartRef} />
+    <div className="list">
+      <h1>Dashboard</h1>
+      <div style={{ width: '80%', height: '100%' }}>
+        <canvas ref={chartRef} />
+      </div>
     </div>
+
   );
 };
 
