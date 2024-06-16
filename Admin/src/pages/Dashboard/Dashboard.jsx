@@ -17,7 +17,7 @@ const LineChart = () => {
         new Chart(ctx, {
           type: 'line',
           data: {
-            labels: ['Jan', 'Fev', 'Mai', 'Abr', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez'], 
+            labels: ['Jan', 'Fev','Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez'], 
             datasets: [{
               label: 'Numero de pedidos por mês',
               data: data, 
