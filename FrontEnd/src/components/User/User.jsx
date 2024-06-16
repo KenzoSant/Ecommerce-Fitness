@@ -62,6 +62,7 @@ const User = () => {
     } catch (error) {
       showNotification('Erro ao alterar!', 'error');
     }
+    console.log(editedUser.name);
   };
 
   const showNotification = (message, type) => {
@@ -87,6 +88,7 @@ const User = () => {
             className="user-image"
           />
           <h2>Olá {editedUser.name || 'Usuário'}</h2>
+          <br />
         </div>
         <div className="user-info">
           <h2>Informações</h2>
@@ -141,7 +143,7 @@ const User = () => {
               Editar
             </button>
           )}
-
+          <br /><br />
           <h2>Endereço</h2>
           <div className="user-info-end">
             {['rua', 'numero', 'bairro', 'cidade', 'estado', 'cep', 'pais'].map((field) => (
@@ -150,12 +152,14 @@ const User = () => {
                 <input
                   type="text"
                   name={field}
-                  value={editedUser.address ? JSON.parse(editedUser.address)[field] || '' : ''}
+                  value={userOrders.length > 0 ? JSON.parse(userOrders[0].address)[field] || '' : ''}
                   readOnly
                 />
               </div>
             ))}
+
           </div>
+
         </div>
 
         <div className="user-orders">
@@ -173,6 +177,7 @@ const User = () => {
                   </p>
                 </li>
               ))}
+
           </ul>
         </div>
         {notification.message && <Notification message={notification.message} type={notification.type} />}

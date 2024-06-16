@@ -118,21 +118,21 @@ const StoreContextProvider = (props) => {
             });
             console.log('Login successful:', response.data);
     
-            // Agora, você precisa buscar os detalhes do usuário usando o token ou identificador fornecido após o login.
-            const userId = response.data.email; // Supondo que o ID do usuário seja retornado após o login
+            const userId = response.data.email;
             console.log("AA",response.data.email);
             
-            // Fazendo uma solicitação para obter os detalhes do usuário
             const userDetailsResponse = await axios.get(`http://localhost:8080/clients/email/${userId}`);
             const userDetails = userDetailsResponse.data;
     
-            // Armazena os detalhes do usuário no estado do contexto
-            setUserDetails(userDetails); // Suponha que exista uma função setUserDetails no seu contexto para atualizar os detalhes do usuário
-            localStorage.setItem('userDetails', JSON.stringify(userDetails)); // Store user details in localStorage
-    
+            setUserDetails(userDetails);
+            localStorage.setItem('userDetails', JSON.stringify(userDetails));
             setIsLoggedIn(true);
             localStorage.setItem('isLoggedIn', 'true');
-            localStorage.setItem('userId', userId);  
+            localStorage.setItem('userId', userId);
+            
+            // Após atualizar os detalhes do usuário, buscar os pedidos do usuário
+            fetchUserOrders(userId);
+    
             return response.data;
         } catch (error) {
             console.error('Error during login:', error);
@@ -140,13 +140,18 @@ const StoreContextProvider = (props) => {
         }
     };
 
+    const updateUser = (userData) => {
+        setUserDetails(userData);
+    };
+
     const logoutUser = () => {
         setIsLoggedIn(false);
         localStorage.removeItem('isLoggedIn');
         localStorage.removeItem('userId');
-        localStorage.removeItem('userDetails'); // Remove user details from localStorage
+        localStorage.removeItem('userDetails');
         setUserId(null);
-        setUserDetails(null); // Clear user details on logout
+        setUserDetails(null);
+        setUserOrders([]); // Limpar os pedidos do usuário
     };
 
     const fetchUserOrders = async (userId) => {
@@ -157,6 +162,8 @@ const StoreContextProvider = (props) => {
             console.error('Erro ao buscar pedidos:', error);
         }
     };
+
+    
 
     const contextValue = {
         foodList,
@@ -176,6 +183,8 @@ const StoreContextProvider = (props) => {
         fetchUserOrders,
         userDetails,
         userOrders,
+        updateUser, 
+        setUserOrders, 
     };
 
     return (
