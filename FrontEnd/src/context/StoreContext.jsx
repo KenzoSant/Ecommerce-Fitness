@@ -10,7 +10,7 @@ const StoreContextProvider = (props) => {
     const [cartItemList, setCartItemList] = useState([]);
     const [isLoggedIn, setIsLoggedIn] = useState(!!localStorage.getItem('isLoggedIn'));
     const [userId, setUserId] = useState(localStorage.getItem('userId') || null);
-    const [userDetails, setUserDetails] = useState(null); 
+    const [userDetails, setUserDetails] = useState(JSON.parse(localStorage.getItem('userDetails')) || null); 
     const [userOrders, setUserOrders] = useState([]); 
 
     useEffect(() => {
@@ -100,6 +100,8 @@ const StoreContextProvider = (props) => {
             localStorage.setItem('isLoggedIn', 'true');
             localStorage.setItem('userId', response.data.id);  // Store user ID
             setUserId(response.data.id);
+            setUserDetails(response.data); // Update user details
+            localStorage.setItem('userDetails', JSON.stringify(response.data)); // Store user details in localStorage
             return response.data;
         } catch (error) {
             console.error('Error during registration:', error);
@@ -126,6 +128,7 @@ const StoreContextProvider = (props) => {
     
             // Armazena os detalhes do usuário no estado do contexto
             setUserDetails(userDetails); // Suponha que exista uma função setUserDetails no seu contexto para atualizar os detalhes do usuário
+            localStorage.setItem('userDetails', JSON.stringify(userDetails)); // Store user details in localStorage
     
             setIsLoggedIn(true);
             localStorage.setItem('isLoggedIn', 'true');
@@ -136,13 +139,14 @@ const StoreContextProvider = (props) => {
             throw error;
         }
     };
-    
 
     const logoutUser = () => {
         setIsLoggedIn(false);
         localStorage.removeItem('isLoggedIn');
         localStorage.removeItem('userId');
+        localStorage.removeItem('userDetails'); // Remove user details from localStorage
         setUserId(null);
+        setUserDetails(null); // Clear user details on logout
     };
 
     const fetchUserOrders = async (userId) => {

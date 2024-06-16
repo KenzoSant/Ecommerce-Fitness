@@ -3,28 +3,6 @@ import Select from 'react-select';
 import './AlterEmployees.css';
 import { AdmContext } from '../../context/AdmContext';
 
-const Notification = ({ message, type }) => {
-  return (
-    <div className={`notification ${type}`}>
-      {message}
-    </div>
-  );
-};
-
-const ConfirmationDialog = ({ onConfirm, onCancel }) => {
-  return (
-    <div className="confirmation-overlay">
-      <div className="confirmation-box">
-        <p>Deseja remover esse funcionário?</p>
-        <div className="list-button">
-          <button className="btn" onClick={onConfirm}>Yes</button>
-          <button className="btn" onClick={onCancel}>No</button>
-        </div>
-      </div>
-    </div>
-  );
-};
-
 const AlterEmployees = ({ employee, onClose }) => {
   const { updateEmployee, deleteEmployee } = useContext(AdmContext);
   const [editedName, setEditedName] = useState(employee.name);
@@ -42,12 +20,17 @@ const AlterEmployees = ({ employee, onClose }) => {
     setEditedName(employee.name);
     setEditedEmail(employee.email);
     setEditedGender(employee.gender);
-    setEditedBirthDate(employee.birthDate);
+    setEditedBirthDate(formatDate(employee.birthDate));
     setEditedPhone(employee.phone);
     setEditedCpf(employee.cpf);
     setEditedPassword(employee.password);
     setEditedRole(employee.role);
   }, [employee]);
+
+  const formatDate = (dateString) => {
+    const [day, month, year] = dateString.split('/');
+    return `${year}-${month}-${day}`;
+  };
 
   const roleOptions = [
     { value: 'ADMINISTRADOR', label: 'ADMINISTRADOR' },
@@ -63,11 +46,6 @@ const AlterEmployees = ({ employee, onClose }) => {
     }),
   };
 
-  const showNotification = (message, type) => {
-    setNotification({ message, type });
-    setTimeout(() => setNotification({ message: '', type: '' }), 2000);
-  };
-
   const handleDeleteClick = () => {
     setShowConfirmation(true);
   };
@@ -75,10 +53,12 @@ const AlterEmployees = ({ employee, onClose }) => {
   const handleConfirmDelete = async () => {
     try {
       await deleteEmployee(employee.id);
-      showNotification('Funcionário removido com sucesso!', 'success');
-      onClose();
+      setNotification({ message: 'Removido com sucesso!', type: 'success' });
+      setTimeout(() => setNotification({ message: '', type: '' }), 2000);
+      setTimeout(() => onClose(), 2000);
     } catch (error) {
-      showNotification('Erro ao remover funcionário', 'error');
+      setNotification({ message: 'Erro ao remover!', type: 'error' });
+      setTimeout(() => setNotification({ message: '', type: '' }), 2000);
     }
     setShowConfirmation(false);
   };
@@ -101,10 +81,12 @@ const AlterEmployees = ({ employee, onClose }) => {
     };
     try {
       await updateEmployee(updatedEmployee);
-      showNotification('Alterações salvas com sucesso!', 'success');
-      onClose();
+      setNotification({ message: 'Alterado com sucesso!', type: 'success' });
+      setTimeout(() => setNotification({ message: '', type: '' }), 2000);
+      setTimeout(() => onClose(), 2000);
     } catch (error) {
-      showNotification('Erro ao salvar alterações', 'error');
+      setNotification({ message: 'Erro ao alterar!', type: 'error' });
+      setTimeout(() => setNotification({ message: '', type: '' }), 2000);
     }
   };
 
@@ -165,14 +147,14 @@ const AlterEmployees = ({ employee, onClose }) => {
               onChange={(e) => setEditedCpf(e.target.value)}
             />
           </div>
-          <div className="flex-col class">
+          {/* <div className="flex-col class">
             <span>Password:</span>
             <input
               type="password"
               value={editedPassword}
               onChange={(e) => setEditedPassword(e.target.value)}
             />
-          </div>
+          </div> */}
           <div className="flex-col class">
             <span>Role:</span>
             <Select
@@ -189,17 +171,21 @@ const AlterEmployees = ({ employee, onClose }) => {
           <button className="btn btn-list" onClick={onClose}>Close</button>
         </div>
         {showConfirmation && (
-          <ConfirmationDialog
-            onConfirm={handleConfirmDelete}
-            onCancel={handleCancelDelete}
-          />
+          <div className="confirmation-overlay">
+            <div className="confirmation-box">
+              <p>Deseja excluir o funcionario?</p>
+              <div className="list-button">
+                <button className="btn" onClick={handleConfirmDelete}>Sim</button>
+                <button className="btn" onClick={handleCancelDelete}>Não</button>
+              </div>
+            </div>
+          </div>
         )}
         {notification.message && (
-          <Notification
-            message={notification.message}
-            type={notification.type}
-          />
-        )}
+                        <div className={`notification ${notification.type}`}>
+                            {notification.message}
+                        </div>
+                    )}
       </div>
     </div>
   );

@@ -1,29 +1,7 @@
 import React, { useState, useEffect, useContext } from 'react';
-import Select from 'react-select';
 import './Alter.css';
 import { AdmContext } from '../../context/AdmContext';
-
-const Notification = ({ message, type }) => {
-  return (
-    <div className={`notification ${type}`}>
-      {message}
-    </div>
-  );
-};
-
-const ConfirmationDialog = ({ onConfirm, onCancel }) => {
-  return (
-    <div className="confirmation-overlay">
-      <div className="confirmation-box">
-        <p>Do you want to delete the product?</p>
-        <div className="list-button">
-          <button className="btn" onClick={onConfirm}>Yes</button>
-          <button className="btn" onClick={onCancel}>No</button>
-        </div>
-      </div>
-    </div>
-  );
-};
+import Select from 'react-select';
 
 const Alter = ({ item, onClose }) => {
   const { ingredients, categories, deleteProduct, updateProduct } = useContext(AdmContext);
@@ -61,11 +39,6 @@ const Alter = ({ item, onClose }) => {
     }),
   };
 
-  const showNotification = (message, type) => {
-    setNotification({ message, type });
-    setTimeout(() => setNotification({ message: '', type: '' }), 2000);
-  };
-
   const handleDeleteClick = () => {
     setShowConfirmation(true);
   };
@@ -73,10 +46,12 @@ const Alter = ({ item, onClose }) => {
   const handleConfirmDelete = async () => {
     try {
       await deleteProduct(item.id);
-      showNotification('Produto removido com sucesso!', 'success');
-      onClose();
+      setNotification({ message: 'Removido com sucesso!', type: 'success' });
+      setTimeout(() => setNotification({ message: '', type: '' }), 2000);
+      setTimeout(() => onClose(), 2000);
     } catch (error) {
-      showNotification('Erro ao remover produto', 'error');
+      setNotification({ message: 'Erro ao remover!', type: 'error' });
+      setTimeout(() => setNotification({ message: '', type: '' }), 2000);
     }
     setShowConfirmation(false);
   };
@@ -95,10 +70,12 @@ const Alter = ({ item, onClose }) => {
     };
     try {
       await updateProduct(updatedItem);
-      showNotification('Alterações salvas com sucesso!', 'success');
-      onClose();
+      setNotification({ message: 'Alterado com sucesso!', type: 'success' });
+      setTimeout(() => setNotification({ message: '', type: '' }), 2000);
+      setTimeout(() => onClose(), 2000);
     } catch (error) {
-      showNotification('Erro ao salvar alterações', 'error');
+      setNotification({ message: 'Erro ao alterar!', type: 'error' });
+      setTimeout(() => setNotification({ message: '', type: '' }), 2000);
     }
   };
 
@@ -158,22 +135,26 @@ const Alter = ({ item, onClose }) => {
           </div>
         </div>
         <div className="list-button">
-          <button className="btn btn-list" onClick={handleSaveChanges}>Save</button>
-          <button className="btn btn-list" onClick={handleDeleteClick}>Delete</button>
-          <button className="btn btn-list" onClick={onClose}>Close</button>
+          <button className="btn btn-list" onClick={handleSaveChanges}>Salvar</button>
+          <button className="btn btn-list" onClick={handleDeleteClick}>Excluir</button>
+          <button className="btn btn-list" onClick={onClose}>Fechar</button>
         </div>
         {showConfirmation && (
-          <ConfirmationDialog
-            onConfirm={handleConfirmDelete}
-            onCancel={handleCancelDelete}
-          />
+          <div className="confirmation-overlay">
+            <div className="confirmation-box">
+              <p>Deseja excluir o produto?</p>
+              <div className="list-button">
+                <button className="btn" onClick={handleConfirmDelete}>Sim</button>
+                <button className="btn" onClick={handleCancelDelete}>Não</button>
+              </div>
+            </div>
+          </div>
         )}
         {notification.message && (
-          <Notification
-            message={notification.message}
-            type={notification.type}
-          />
-        )}
+            <div className={`notification ${notification.type}`}>
+              {notification.message}
+            </div>
+          )}
       </div>
     </div>
   );

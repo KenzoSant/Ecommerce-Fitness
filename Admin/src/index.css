@@ -60,7 +60,7 @@ hr{
 .flex-col{
   display: flex;
   flex-direction: column;
-  gap: 10px;
+
 }
 
 .class{
@@ -86,7 +86,7 @@ hr{
   border-radius: 5px;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
   text-align: left;
-  max-width: 600px;
+  max-width: 550px;
   width: 100%;
 }
 
@@ -94,7 +94,13 @@ hr{
 .list-info{
   display: grid;
   grid-template-columns:repeat(2, 1fr); /* 1 coluna por padrão */
-  grid-gap: 20px;
+  grid-gap: 10px;
+}
+
+.order{
+  display: grid;
+  grid-template-columns:repeat(3, 1fr); /* 1 coluna por padrão */
+  grid-gap: 10px;
 }
 
 .list-info span {

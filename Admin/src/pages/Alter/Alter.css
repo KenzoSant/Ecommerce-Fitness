@@ -40,6 +40,7 @@
 .list-button {
     display: flex;
     justify-content: center;
+    align-items: center;
     padding: 1rem 0 1rem;
     gap: 2rem;
 }
@@ -71,3 +72,4 @@
 .confirmation-box button {
     margin: 0 10px;
 }
+

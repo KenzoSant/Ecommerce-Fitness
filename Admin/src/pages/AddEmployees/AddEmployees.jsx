@@ -1,4 +1,5 @@
 import React, { useState, useContext } from 'react';
+import Select from 'react-select';
 import './AddEmployees.css';
 import { AdmContext } from "../../context/AdmContext";
 
@@ -12,20 +13,44 @@ const AddEmployees = ({ setShowAddForm }) => {
     const [cpf, setCpf] = useState('');
     const [password, setPassword] = useState('');
     const [role, setRole] = useState('');
-    const [error, setError] = useState('');
-    const [success, setSuccess] = useState('');
+    const [notification, setNotification] = useState({ message: '', type: '' });
+
+    const roleOptions = [
+        { value: 'ADMINISTRADOR', label: 'ADMINISTRADOR' },
+        { value: 'COZINHEIRO', label: 'COZINHEIRO' },
+        { value: 'ENTREGADOR', label: 'ENTREGADOR' }
+    ];
+
+    const customStyles = {
+        control: (provided) => ({
+            ...provided,
+            border: '1.5px solid var(--second-color-green)',
+            borderRadius: '10px',
+        }),
+    };
 
     const handleSubmit = async (event) => {
         event.preventDefault();
         try {
             await registerEmployee({ name, gender, birthDate, cpf, email, phone, password, role });
-            setSuccess('Usuário cadastrado com sucesso!');
-            setTimeout(() => setSuccess(''), 3000);
-            setError('');
+            setNotification({ message: 'Cadastrado com sucesso!', type: 'success' });
+            setTimeout(() => setNotification({ message: '', type: '' }), 2000);
+            setName('');
+            setEmail('');
+            setGender('');
+            setBirthDate('');
+            setPhone('');
+            setCpf('');
+            setPassword('');
+            setRole('');
         } catch (error) {
-            setError('Erro ao cadastrar usuário');
-            setSuccess('');
+            setNotification({ message: 'Erro ao cadastrar!', type: 'error' });
+            setTimeout(() => setNotification({ message: '', type: '' }), 2000);
         }
+    };
+
+    const handleRoleChange = (selectedOption) => {
+        setRole(selectedOption.value);
     };
 
     return (
@@ -119,18 +144,18 @@ const AddEmployees = ({ setShowAddForm }) => {
                     </div>
                     <div className="flex-col class">
                         <label htmlFor="role">Função:</label>
-                        <input
-                            placeholder="Digite a função"
-                            type="text"
-                            id="role"
-                            name="role"
-                            value={role}
-                            onChange={(e) => setRole(e.target.value)}
-                            required
+                        <Select
+                            value={roleOptions.find(option => option.value === role)}
+                            onChange={handleRoleChange}
+                            options={roleOptions}
+                            styles={customStyles}
                         />
                     </div>
-                    {error && <p className="error">{error}</p>}
-                    {success && <p className="success">{success}</p>}
+                    {notification.message && (
+                        <div className={`notification ${notification.type}`}>
+                            {notification.message}
+                        </div>
+                    )}
                     <button type="submit" className='add-btn'>Cadastrar</button>
                     <button type="button" className='add-btn' onClick={() => setShowAddForm(false)}>Fechar</button>
                 </form>

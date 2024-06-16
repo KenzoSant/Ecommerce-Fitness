@@ -1,16 +1,28 @@
-import React, { useEffect, useContext } from 'react';
+import React, { useEffect, useContext, useState } from 'react';
 import './User.css';
 import { StoreContext } from '../../context/StoreContext';
-import {assets} from '../../assets/assets'
+import { assets } from '../../assets/assets';
+
+const Notification = ({ message, type }) => (
+  <div className={`notification ${type}`}>
+    {message}
+  </div>
+);
 
 const User = () => {
-  const { isLoggedIn, userId, fetchUserOrders, userOrders } = useContext(StoreContext);
+  const { isLoggedIn, userDetails, fetchUserOrders, userOrders } = useContext(StoreContext);
+  const [notification, setNotification] = useState({ message: '', type: '' });
 
   useEffect(() => {
-    if (isLoggedIn && userId) {
-      fetchUserOrders(userId);
+    if (isLoggedIn && userDetails) {
+      fetchUserOrders(userDetails.id);
     }
-  }, [isLoggedIn, userId, fetchUserOrders]);
+  }, [isLoggedIn, userDetails, fetchUserOrders]);
+
+  const showNotification = (message, type) => {
+    setNotification({ message, type });
+    setTimeout(() => setNotification({ message: '', type: '' }), 3000);
+  };
 
   if (!isLoggedIn) {
     return <div>Por favor, faça login para ver seu perfil.</div>;
@@ -18,52 +30,121 @@ const User = () => {
 
   return (
     <div className="user-profile">
-      {userOrders && userOrders.length > 0 && userOrders[0].client && (
-        <>
-          <div className="user-info-img">
-            <img
-              src={userOrders[0].client.image ? `src/assets/${userOrders[0].client.image}` : `${assets.profile_icon}`}
-              alt="User"
-              className="user-image"
-            />
-            <h2>Olá {userOrders[0].client.name}</h2>
-          </div>
-          <div className="user-info"> 
-            <h2>Informações</h2>
-            <p>Email: {userOrders[0].client.email}</p>
-            <p>Documento: {userOrders[0].client.document}</p>
-            <p>Telefone: {userOrders[0].client.phone}</p>
-            <br />
-            <h2>Endereço</h2>
-            <div className="user-info-end">
-              {userOrders[0].address && (
-                <React.Fragment>
-                  <p>Rua: {JSON.parse(userOrders[0].address).rua}</p>
-                  <p>Número: {JSON.parse(userOrders[0].address).numero}</p>
-                  <p>Bairro: {JSON.parse(userOrders[0].address).bairro}</p>
-                  <p>Cidade: {JSON.parse(userOrders[0].address).cidade}</p>
-                  <p>Estado: {JSON.parse(userOrders[0].address).estado}</p>
-                  <p>CEP: {JSON.parse(userOrders[0].address).cep}</p>
-                  <p>País: {JSON.parse(userOrders[0].address).pais}</p>
-                </React.Fragment>
-              )}
+      <div className="user-data">
+        <div className="user-info-img">
+          <img
+            src={userDetails?.image ? `src/assets/${userDetails.image}` : `${assets.profile_icon}`}
+            alt="User"
+            className="user-image"
+          />
+          <h2>Olá {userDetails?.name || 'Usuário'}</h2>
+        </div>
+        <div className="user-info">
+          <h2>Informações</h2>
+          <div className="user-info-start">
+            <div className="flex-col class">
+              <label>Email:</label>
+              <input type="email" value={userDetails?.email || ''} readOnly />
+            </div>
+            <div className="flex-col class">
+              <label>Documento:</label>
+              <input type="text" value={userDetails?.document || ''} readOnly />
+            </div>
+            <div className="flex-col class">
+              <label>Telefone:</label>
+              <input type="text" value={userDetails?.phone || ''} readOnly />
             </div>
           </div>
-        </>
-      )}
-      <div className="user-orders">
-        <h3>Meus Pedidos</h3>
-        <ul>
-          {userOrders && userOrders.map(order => (
-            <li key={order.id}>
-              <h4>Pedido #{order.id}</h4>
-              <p>Status do Pedido: {order.orderStage}</p>
-              <p>Data: {new Date(order.orderDate).toLocaleDateString()}</p>
-              <p>Itens: {order.orderItems.length}</p>
-              <p>Total: {order.orderItems.reduce((acc, item) => acc + item.price * item.quantity, 0)}</p>
-            </li>
-          ))}
-        </ul>
+
+          <br />
+
+          <h2>Endereço</h2>
+          <div className="user-info-end">
+            {userDetails?.address ? (
+              <>
+                <div className="flex-col class">
+                  <label>Rua:</label>
+                  <input type="text" value={JSON.parse(userDetails.address).rua} readOnly />
+                </div>
+                <div className="flex-col class">
+                  <label>Número:</label>
+                  <input type="text" value={JSON.parse(userDetails.address).numero} readOnly />
+                </div>
+                <div className="flex-col class">
+                  <label>Bairro:</label>
+                  <input type="text" value={JSON.parse(userDetails.address).bairro} readOnly />
+                </div>
+                <div className="flex-col class">
+                  <label>Cidade:</label>
+                  <input type="text" value={JSON.parse(userDetails.address).cidade} readOnly />
+                </div>
+                <div className="flex-col class">
+                  <label>Estado:</label>
+                  <input type="text" value={JSON.parse(userDetails.address).estado} readOnly />
+                </div>
+                <div className="flex-col class">
+                  <label>CEP:</label>
+                  <input type="text" value={JSON.parse(userDetails.address).cep} readOnly />
+                </div>
+                <div className="flex-col class">
+                  <label>País:</label>
+                  <input type="text" value={JSON.parse(userDetails.address).pais} readOnly />
+                </div>
+              </>
+            ) : (
+              <>
+                <div className="flex-col class">
+                  <label>Rua:</label>
+                  <input type="text" value="" readOnly />
+                </div>
+                <div className="flex-col class">
+                  <label>Número:</label>
+                  <input type="text" value="" readOnly />
+                </div>
+                <div className="flex-col class">
+                  <label>Bairro:</label>
+                  <input type="text" value="" readOnly />
+                </div>
+                <div className="flex-col class">
+                  <label>Cidade:</label>
+                  <input type="text" value="" readOnly />
+                </div>
+                <div className="flex-col class">
+                  <label>Estado:</label>
+                  <input type="text" value="" readOnly />
+                </div>
+                <div className="flex-col class">
+                  <label>CEP:</label>
+                  <input type="text" value="" readOnly />
+                </div>
+                <div className="flex-col class">
+                  <label>País:</label>
+                  <input type="text" value="" readOnly />
+                </div>
+              </>
+            )}
+          </div>
+        </div>
+        <div className="user-orders">
+          <h2>Meus Pedidos</h2>
+          <ul>
+            {userOrders && userOrders.map(order => (
+              <li key={order.id}>
+                <h4>Pedido #{order.id}</h4>
+                <p>Status do Pedido: {order.orderStage}</p>
+                <p>Data: {new Date(order.orderDate).toLocaleDateString()}</p>
+                <p>Itens: {order.orderItems.length}</p>
+                <p>Total: {order.orderItems.reduce((acc, item) => acc + item.price * item.quantity, 0)}</p>
+              </li>
+            ))}
+          </ul>
+        </div>
+        {notification.message && (
+          <Notification
+            message={notification.message}
+            type={notification.type}
+          />
+        )}
       </div>
     </div>
   );
