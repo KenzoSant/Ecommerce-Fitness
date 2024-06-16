@@ -8,7 +8,7 @@ const FoodDisplay = ({ category }) => {
 
     return (
         <div className="food-display" id="food-display">
-            <h2>Best dishes</h2>
+            <h2>Melhores Pratos</h2>
             <div className="food-display-list">
                 {foodList.map((item, index) => {
                     const foodCategory = categories.find(cat => cat.id === item.id_CategoryFood);

@@ -32,28 +32,28 @@ const AlterOrders = ({ order, onClose, onUpdate }) => {
   return (
     <div className="screen">
       <div className="box">
-        <h2>Edit Order</h2>
+        <h2>Editar Pedido</h2>
         <div className="list-info">
           <div className='flex-col class'>
-            <h3>Client Information</h3>
+            <h3>Cliente</h3>
             <p>Name: {order.client.name}</p>
             <p>Email: {order.client.email}</p>
             <p>Phone: {order.client.phone}</p>
             <p>Document: {order.client.document}</p>
           </div>
           <div className='flex-col class'>
-            <h3>Employee Information</h3>
+            <h3>Funcionario</h3>
             <p>Name: {order.employee.name}</p>
             <p>Role: {order.employee.role}</p>
           </div>
           <div className='flex-col class'>
-            <h3>Order Details</h3>
-            <p>Date: {order.date}</p>
+            <h3>Pedido</h3>
+            <p>Data: {order.date}</p>
             <p>Item: {order.item}</p>
-            <p>Price: {order.price}</p>
-            <p>Calories: {order.kcal}</p>
-            <p>Payment Type: {order.paymentType.name}</p>
-            <p>Address: {order.address}</p>
+            <p>Preço: {order.price}</p>
+            <p>Kcal: {order.kcal}</p>
+            <p>Tipo Pagamento: {order.paymentType.name}</p>
+            <p>Endereço: {order.address}</p>
           </div>
           <div className="flex-col class">
             <label>Status:</label>

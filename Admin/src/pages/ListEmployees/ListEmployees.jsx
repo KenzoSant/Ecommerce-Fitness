@@ -42,11 +42,11 @@ const ListEmployees = () => {
 
   return (
     <div className="list">
-      <h1>Employees</h1>
+      <h1>Funcionarios</h1>
       <div className="search-bar">
         <input
           type="text"
-          placeholder="Search for an employee..."
+          placeholder="Pesquisar..."
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
         />

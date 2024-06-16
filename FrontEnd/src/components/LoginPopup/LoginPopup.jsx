@@ -35,7 +35,7 @@ const LoginPopup = ({ setShowLogin }) => {
                 setShowLogin(false);
             } catch (error) {
                 console.error('Error during registration:', error);
-                setError('Error during registration. Please try again.');
+                setError('Erro ao cadastrar. Tente novamente');
             }
         } else {
             try {
@@ -43,7 +43,7 @@ const LoginPopup = ({ setShowLogin }) => {
                 setShowLogin(false);
             } catch (error) {
                 console.error('Error during login:', error);
-                setError('Invalid email or password. Please try again.');
+                setError('Email e/ou Senha inválidos. Tente novamente');
             }
         }
     };
@@ -60,7 +60,7 @@ const LoginPopup = ({ setShowLogin }) => {
                         <input
                             type="text"
                             name="name"
-                            placeholder="Name"
+                            placeholder="Nome"
                             value={formData.name}
                             onChange={handleInputChange}
                             required
@@ -77,7 +77,7 @@ const LoginPopup = ({ setShowLogin }) => {
                     <input
                         type="password"
                         name="password"
-                        placeholder="Password"
+                        placeholder="Senha"
                         value={formData.password}
                         onChange={handleInputChange}
                         required
@@ -85,18 +85,18 @@ const LoginPopup = ({ setShowLogin }) => {
                 </div>
                 {error && <p className="error-message">{error}</p>}
                 <button className="button-func" type="submit">
-                    {currState === "Sign Up" ? "Create Account" : "Login"}
+                    {currState === "Sign Up" ? "Cadastrar" : "Entrar"}
                 </button>
                 {currState === "Login" ? null : (
                     <div className="login-popup-condition">
                         <input type="checkbox" name="checkbox" required />
-                        <p>I agree to the terms of use & privacy policy.</p>
+                        <p>Concordo com os termos de uso e política de privacidade.</p>
                     </div>
                 )}
                 {currState === "Login" ? (
-                    <p>Create a new account? <span onClick={() => setCurrState("Sign Up")}>Click here</span></p>
+                    <p>Criar uma conta? <span onClick={() => setCurrState("Sign Up")}>Clique aqui</span></p>
                 ) : (
-                    <p>Already have an account? <span onClick={() => setCurrState("Login")}>Login here</span></p>
+                    <p>Já possui uma conta? <span onClick={() => setCurrState("Login")}>Login aqui</span></p>
                 )}
             </form>
         </div>

@@ -50,11 +50,11 @@ const ListOrders = () => {
 
   return (
     <div className="list">
-      <h1>Orders</h1>
+      <h1>Pedido</h1>
       <div className="search-bar">
         <input
           type="text"
-          placeholder="Search for an order by ID..."
+          placeholder="Pesquisar..."
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
         />

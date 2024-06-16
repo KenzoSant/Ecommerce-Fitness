@@ -87,11 +87,11 @@ const Alter = ({ item, onClose }) => {
   return (
     <div className="screen">
       <div className="box">
-        <h2>Edit Product</h2>
+        <h2>Editar Produto</h2>
         <img src={item.image} alt={item.name} />
         <div className="list-info">
           <div className="flex-col class">
-            <span>Name:</span>
+            <span>Nome:</span>
             <input
               type="text"
               value={editedName}
@@ -100,7 +100,7 @@ const Alter = ({ item, onClose }) => {
           </div>
 
           <div className="flex-col class">
-            <span>Price:</span>
+            <span>Preço:</span>
             <input
               type="text"
               value={editedPrice}
@@ -109,7 +109,7 @@ const Alter = ({ item, onClose }) => {
           </div>
 
           <div className="flex-col class">
-            <span>Category:</span>
+            <span>Categoria:</span>
             <Select
               value={categoryOptions.find(option => option.value === selectedCategory)}
               onChange={handleCategoryChange}
@@ -119,7 +119,7 @@ const Alter = ({ item, onClose }) => {
           </div>
 
           <div className="flex-col class">
-            <span>Ingredients:</span>
+            <span>Ingredientes:</span>
             <Select
               isMulti
               value={editedIngredients.map(ingredientId => ({

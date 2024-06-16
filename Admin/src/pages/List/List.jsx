@@ -32,11 +32,11 @@ const List = () => {
 
   return (
     <div className="list">
-      <h1>Food Items</h1>
+      <h1>Pratos</h1>
       <div className="search-bar">
         <input
           type="text"
-          placeholder="Search for a food item..."
+          placeholder="Pesquisar..."
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
         />

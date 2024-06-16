@@ -50,7 +50,7 @@ const Navbar = ({ setShowLogin }) => {
             onClick={() => setMenu("footer")}
             className={`navbar__link ${menu === "footer" ? "active" : ""}`}
           >
-            CONTACT
+            CONTATO
           </a>
         </li>
       </ul>

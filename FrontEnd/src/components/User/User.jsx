@@ -24,23 +24,10 @@ const User = () => {
   useEffect(() => {
     if (userDetails) {
       setEditedUser({
-        ...userDetails,
-        birthDate: formatDateToISO(userDetails.birthDate),
+        ...userDetails
       });
     }
   }, [userDetails]);
-
-  const formatDateToISO = (dateString) => {
-    if (!dateString) return '';
-    const [day, month, year] = dateString.split('/');
-    return `${year}-${month}-${day}`;
-  };
-
-  const formatDateToBR = (dateString) => {
-    if (!dateString) return '';
-    const [year, month, day] = dateString.split('-');
-    return `${day}/${month}/${year}`;
-  };
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -52,17 +39,12 @@ const User = () => {
 
   const handleSaveChanges = async () => {
     try {
-      const updatedUser = {
-        ...editedUser,
-        birthDate: formatDateToBR(editedUser.birthDate),
-      };
       await updateUser(updatedUser);
       showNotification('Alterado com sucesso!', 'success');
       setIsEditing(false);
     } catch (error) {
       showNotification('Erro ao alterar!', 'error');
     }
-    console.log(editedUser.name);
   };
 
   const showNotification = (message, type) => {
@@ -119,16 +101,6 @@ const User = () => {
                 type="text"
                 name="phone"
                 value={editedUser.phone || ''}
-                onChange={handleInputChange}
-                readOnly={!isEditing}
-              />
-            </div>
-            <div className="flex-col class">
-              <label>Data de Nascimento:</label>
-              <input
-                type="date"
-                name="birthDate"
-                value={editedUser.birthDate || ''}
                 onChange={handleInputChange}
                 readOnly={!isEditing}
               />

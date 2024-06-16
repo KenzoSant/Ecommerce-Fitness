@@ -20,11 +20,11 @@ const Footer = () => {
                 <ul>
                     <li><a href="#home">Home</a></li>
                     <li><a href="#explore-menu">Menu</a></li>
-                    <li><a href="footer">Contact</a></li>
+                    <li><a href="footer">Contato</a></li>
                 </ul>
             </div>
             <div className="footer-content-right">
-                <h2>CONTACT</h2>
+                <h2>CONTATO</h2>
                 <ul>
                     <li>+55-1995364-7323</li>
                     <li>fit-food@gmail.com</li>

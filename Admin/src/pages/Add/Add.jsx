@@ -87,7 +87,7 @@ const Add = ({ setShowAddForm }) => {
         <h1>Cadastros</h1>
         <form onSubmit={handleSubmit}>
           <div className="add-img-upload flex-col">
-            <p>Upload Image</p>
+            <p>Upload Image:</p>
             <label htmlFor="image">
               <img src={formData.image ? URL.createObjectURL(formData.image) : assets.upload_area} alt="" />
             </label>
@@ -95,7 +95,7 @@ const Add = ({ setShowAddForm }) => {
           </div>
 
           <div className="add-product-category flex-col class">
-            <p>Product Category</p>
+            <p>Categoria:</p>
             <Select
               options={categories.map(category => ({ value: category.id, label: category.name }))}
               value={selectedCategory ? { value: selectedCategory, label: categories.find(category => category.id === selectedCategory).name } : null}
@@ -108,12 +108,12 @@ const Add = ({ setShowAddForm }) => {
           </div>
 
           <div className="add-product-name flex-col class">
-            <p>Product Name</p>
+            <p>Nome:</p>
             <input type="text" name='name' value={formData.name} onChange={handleChange} placeholder='Type Here' required />
           </div>
 
           <div className="add-product-ingredients flex-col class">
-            <p>Product Ingredients</p>
+            <p>Ingredientes:</p>
             <Select
               isMulti
               options={ingredients.map(ingredient => ({ value: ingredient.id, label: ingredient.name }))}
@@ -126,17 +126,17 @@ const Add = ({ setShowAddForm }) => {
           </div>
 
           <div className="add-product-price flex-col class">
-            <p>Product Price</p>
+            <p>Preço:</p>
             <input type="number" name='price' value={formData.price} onChange={handleChange} placeholder='Type Here' required />
           </div>
 
           <div className="add-product-description flex-col class">
-            <p>Product Description</p>
+            <p>Descrição:</p>
             <textarea name='description' value={formData.description} onChange={handleChange} rows='1' placeholder='Type Here'  />
           </div>
 
           <div className="add-product-kcal flex-col class">
-            <p>Product Kcal</p>
+            <p>Kcal:</p>
             <input type="number" name='kcal' value={formData.kcal} onChange={handleChange} placeholder='Type Here' required />
           </div>
 
@@ -149,8 +149,8 @@ const Add = ({ setShowAddForm }) => {
             </div>
           )}
 
-          <button type="submit" className="add-btn">ADD</button>
-          <button type="button" className="add-btn" onClick={() => setShowAddForm(false)}>Close</button>
+          <button type="submit" className="add-btn">Cadastrar</button>
+          <button type="button" className="add-btn" onClick={() => setShowAddForm(false)}>Fechar</button>
         </form>
       </div>
     </div>
