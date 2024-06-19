@@ -48,12 +48,14 @@ const AlterOrders = ({ order, onClose, onUpdate }) => {
           </div>
           <div className='flex-col class'>
             <h3>Pedido</h3>
-            <p>Data: {order.date}</p>
-            <p>Item: {order.item}</p>
-            <p>Preço: {order.price}</p>
-            <p>Kcal: {order.kcal}</p>
+            <p>Data: {order.orderDate}</p>
+            {/* <p>Item: {order.item}</p> */}
+            <p>Preço: {order.total_price}</p>
+            <p>Kcal: {order.total_kcal}</p>
             <p>Tipo Pagamento: {order.paymentType.name}</p>
+            <div className="end">
             <p>Endereço: {order.address}</p>
+            </div>
           </div>
           <div className="flex-col class">
             <label>Status:</label>

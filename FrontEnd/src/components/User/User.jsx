@@ -2,6 +2,8 @@ import React, { useEffect, useContext, useState } from 'react';
 import './User.css';
 import { StoreContext } from '../../context/StoreContext';
 import { assets } from '../../assets/assets';
+import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 
 const Notification = ({ message, type }) => (
   <div className={`notification ${type}`}>
@@ -10,42 +12,73 @@ const Notification = ({ message, type }) => (
 );
 
 const User = () => {
-  const { isLoggedIn, userId, fetchUserOrders, userOrders, userDetails, updateUser } = useContext(StoreContext);
+  const {
+    isLoggedIn,
+    userId,
+    fetchUserOrders,
+    userOrders,
+    userDetails,
+    updateUser,
+    logout
+  } = useContext(StoreContext);
   const [editedUser, setEditedUser] = useState(null);
   const [notification, setNotification] = useState({ message: '', type: '' });
   const [isEditing, setIsEditing] = useState(false);
+  const [selectedAddress, setSelectedAddress] = useState(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (isLoggedIn && userId) {
       fetchUserOrders(userId);
     }
-  }, [isLoggedIn, userId, fetchUserOrders]);
+    console.log("VV",userId);
+  }, [isLoggedIn, userId, navigate]);
 
   useEffect(() => {
     if (userDetails) {
-      setEditedUser({
-        ...userDetails
-      });
+      setEditedUser({ ...userDetails });
+      if (userDetails.addresses && userDetails.addresses.length > 0) {
+        setSelectedAddress(userDetails.addresses[0]);
+      }
     }
   }, [userDetails]);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    setEditedUser((prevUser) => ({
-      ...prevUser,
-      [name]: value,
-    }));
+    if (name in selectedAddress) {
+      setSelectedAddress((prevAddress) => ({
+        ...prevAddress,
+        [name]: value,
+      }));
+    } else {
+      setEditedUser((prevUser) => ({
+        ...prevUser,
+        [name]: value,
+      }));
+    }
+  };
+
+  const handleAddressChange = (e) => {
+    const addressId = e.target.value;
+    const address = editedUser.addresses.find((addr) => addr.id === parseInt(addressId));
+    setSelectedAddress(address);
   };
 
   const handleSaveChanges = async () => {
     try {
-      await updateUser(updatedUser);
-      showNotification('Alterado com sucesso!', 'success');
-      setIsEditing(false);
+        const updatedUser = {
+            ...editedUser,
+            addresses: editedUser.addresses.map((addr) =>
+                addr.id === selectedAddress.id ? selectedAddress : addr
+            ),
+        };
+        await registerOrUpdateUser(updatedUser);
+        showNotification('Alterado com sucesso!', 'success');
+        setIsEditing(false);
     } catch (error) {
-      showNotification('Erro ao alterar!', 'error');
+        showNotification('Erro ao alterar!', 'error');
     }
-  };
+};
 
   const showNotification = (message, type) => {
     setNotification({ message, type });
@@ -53,10 +86,10 @@ const User = () => {
   };
 
   if (!isLoggedIn) {
-    return <div>Por favor, faça login para ver seu perfil.</div>;
+    navigate('/');
   }
 
-  if (!editedUser) {
+  if (!editedUser || !selectedAddress) {
     return <div>Carregando...</div>;
   }
 
@@ -117,21 +150,35 @@ const User = () => {
           )}
           <br /><br />
           <h2>Endereço</h2>
-          <div className="user-info-end">
-            {['rua', 'numero', 'bairro', 'cidade', 'estado', 'cep', 'pais'].map((field) => (
+          <div className="flex-col class">
+              <label>Selecionar Endereço:</label>
+              <select
+                value={selectedAddress.id || ''}
+                onChange={handleAddressChange}
+                disabled={!isEditing}
+              >
+                {editedUser.addresses && editedUser.addresses.length > 0 && editedUser.addresses.map((address) => (
+                  <option key={address.id} value={address.id}>
+                    {`${address.street}, ${address.number} - ${address.neighborhood}`}
+                  </option>
+                ))}
+              </select>
+            </div>
+            <br />
+          <div className="user-info-end"> 
+            {['street', 'number', 'neighborhood', 'city', 'state', 'zipCode'].map((field) => (
               <div className="flex-col class" key={field}>
                 <label>{field.charAt(0).toUpperCase() + field.slice(1)}:</label>
                 <input
                   type="text"
                   name={field}
-                  value={userOrders.length > 0 ? JSON.parse(userOrders[0].address)[field] || '' : ''}
-                  readOnly
+                  value={selectedAddress[field] || ''}
+                  onChange={handleInputChange}
+                  readOnly={!isEditing}
                 />
               </div>
             ))}
-
           </div>
-
         </div>
 
         <div className="user-orders">
@@ -142,14 +189,13 @@ const User = () => {
                 <li key={order.id}>
                   <h4>Pedido #{order.id}</h4>
                   <p>Status do Pedido: {order.orderStage}</p>
-                  <p>Data: {new Date(order.orderDate).toLocaleDateString()}</p>
+                  <p>Data: {order.orderDate}</p>
                   <p>Itens: {order.orderItems.length}</p>
                   <p>
-                    Total: {order.orderItems.reduce((acc, item) => acc + item.price * item.quantity, 0)}
+                    Total: {order.total_price}
                   </p>
                 </li>
               ))}
-
           </ul>
         </div>
         {notification.message && <Notification message={notification.message} type={notification.type} />}

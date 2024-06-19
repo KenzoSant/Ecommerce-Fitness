@@ -61,47 +61,49 @@ const StoreContextProvider = (props) => {
     };
 
     const removeFromCart = (itemId) => {
-        setCartItems((prev) => ({ ...prev, [itemId]: prev[itemId] - 1 }));
-        const updatedCartItemList = cartItemList.map(item => {
-            if (item.id === itemId) {
-                return { ...item, quantity: item.quantity - 1 };
-            }
-            return item;
-        });
-        setCartItemList(updatedCartItemList.filter(item => item.quantity > 0));
+        if (cartItems[itemId] > 1) {
+            setCartItems((prev) => ({ ...prev, [itemId]: prev[itemId] - 1 }));
+            const updatedCartItemList = cartItemList.map(item => {
+                if (item.id === itemId) {
+                    return { ...item, quantity: item.quantity - 1 };
+                }
+                return item;
+            });
+            setCartItemList(updatedCartItemList);
+        } else {
+            setCartItems((prev) => {
+                const updatedCartItems = { ...prev };
+                delete updatedCartItems[itemId];
+                return updatedCartItems;
+            });
+            const updatedCartItemList = cartItemList.filter(item => item.id !== itemId);
+            setCartItemList(updatedCartItemList);
+        }
     };
 
     const getTotalCartAmount = () => {
-        let totalAmount = 0;
-        cartItemList.forEach(item => {
-            totalAmount += item.price * cartItems[item.id];
-        });
-        return totalAmount;
+        return cartItemList.reduce((total, item) => total + item.price * item.quantity, 0);
     };
 
     const getTotalCartItems = () => {
-        let totalItems = 0;
-        Object.values(cartItems).forEach(quantity => {
-            totalItems += quantity;
-        });
-        return totalItems;
+        return cartItemList.reduce((total, item) => total + item.quantity, 0);
     };
 
-    const registerUser = async ({ name, email, password }) => {
-        console.log('Registering user with data:', { name, email, password });
+    const registerUser = async (name, email, password, address) => {
         try {
             const response = await axios.post('http://localhost:8080/clients/auth/register', {
                 name,
                 email,
                 password,
+                address
             });
             console.log('Registration successful:', response.data);
             setIsLoggedIn(true);
             localStorage.setItem('isLoggedIn', 'true');
-            localStorage.setItem('userId', response.data.id);  // Store user ID
+            localStorage.setItem('userId', response.data.id);
             setUserId(response.data.id);
-            setUserDetails(response.data); // Update user details
-            localStorage.setItem('userDetails', JSON.stringify(response.data)); // Store user details in localStorage
+            setUserDetails(response.data);
+            localStorage.setItem('userDetails', JSON.stringify(response.data));
             return response.data;
         } catch (error) {
             console.error('Error during registration:', error);
@@ -110,7 +112,6 @@ const StoreContextProvider = (props) => {
     };
 
     const loginUser = async (email, password) => {
-        console.log('Logging in user with email:', email, password);
         try {
             const response = await axios.post('http://localhost:8080/clients/auth/login', {
                 email,
@@ -120,7 +121,7 @@ const StoreContextProvider = (props) => {
     
             const userId = response.data.email;
             console.log("AA",response.data.email);
-            
+    
             const userDetailsResponse = await axios.get(`http://localhost:8080/clients/email/${userId}`);
             const userDetails = userDetailsResponse.data;
     
@@ -129,8 +130,11 @@ const StoreContextProvider = (props) => {
             setIsLoggedIn(true);
             localStorage.setItem('isLoggedIn', 'true');
             localStorage.setItem('userId', userId);
-            
-            // Após atualizar os detalhes do usuário, buscar os pedidos do usuário
+            console.log("BB",localStorage);
+    
+            // Atualiza o estado userId
+            setUserId(userId);
+    
             fetchUserOrders(userId);
     
             return response.data;
@@ -151,7 +155,8 @@ const StoreContextProvider = (props) => {
         localStorage.removeItem('userDetails');
         setUserId(null);
         setUserDetails(null);
-        setUserOrders([]); // Limpar os pedidos do usuário
+        setUserOrders([]);
+        console.log("BB",localStorage);
     };
 
     const fetchUserOrders = async (userId) => {
@@ -163,7 +168,40 @@ const StoreContextProvider = (props) => {
         }
     };
 
+    const updateUserDetails = async (userData) => {
+        try {
+            const response = await axios.put(`http://localhost:8080/clients/email/${userData.email}`, userData);
+            setUserDetails(userData);
+            localStorage.setItem('userDetails', JSON.stringify(userData));
+            console.log("UP",response.data);
+            return response.data;
+        } catch (error) {
+            console.error('Erro ao atualizar detalhes do usuário:', error);
+            throw error;
+        }
+    };
     
+    const registerOrUpdateUser = async (userData) => {
+        try {
+            if (userData.id) {
+                await updateUserDetails(userData);
+                console.log("UP2",userData);
+            } else {
+                const response = await axios.post('http://localhost:8080/clients/auth/register', userData);
+                console.log("UP1",userData);
+                setIsLoggedIn(true);
+                localStorage.setItem('isLoggedIn', 'true');
+                localStorage.setItem('userId', response.data.id);
+                setUserId(response.data.id);
+                setUserDetails(response.data);
+                localStorage.setItem('userDetails', JSON.stringify(response.data));
+                return response.data;
+            }
+        } catch (error) {
+            console.error('Erro durante registro ou atualização do usuário:', error);
+            throw error;
+        }
+    };
 
     const contextValue = {
         foodList,
@@ -185,6 +223,8 @@ const StoreContextProvider = (props) => {
         userOrders,
         updateUser, 
         setUserOrders, 
+        updateUserDetails,
+        registerOrUpdateUser,
     };
 
     return (
@@ -194,4 +234,4 @@ const StoreContextProvider = (props) => {
     );
 }
 
-export default StoreContextProvider;    
+export default StoreContextProvider;
