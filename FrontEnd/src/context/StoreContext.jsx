@@ -98,7 +98,8 @@ const StoreContextProvider = (props) => {
         return cartItemList.reduce((total, item) => total + item.quantity, 0);
     };
 
-    const registerUser = async (name, email, password) => {
+    const registerUser = async ({ name, email, password }) => {
+        console.log('Registering user with data:', { name, email, password });
         try {
             const response = await axios.post('http://localhost:8080/clients/auth/register', {
                 name,
@@ -118,6 +119,7 @@ const StoreContextProvider = (props) => {
             throw error;
         }
     };
+    
 
     const loginUser = async (email, password) => {
         try {
