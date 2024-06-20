@@ -99,7 +99,6 @@ const StoreContextProvider = (props) => {
     };
 
     const registerUser = async ({ name, email, password }) => {
-        console.log('Registering user with data:', { name, email, password });
         try {
             const response = await axios.post('http://localhost:8080/clients/auth/register', {
                 name,
@@ -181,11 +180,16 @@ const StoreContextProvider = (props) => {
 
     const updateUserDetails = async (userData) => {
         try {
-            const response = await axios.put(`http://localhost:8080/clients/email/${userData.email}`, userData);
+            // Verifica se é uma atualização ou inserção
+            if (userData.id) {
+                // Atualização
+                await axios.put(`http://localhost:8080/clients/email/${userData.email}`, userData);
+            } else {
+                // Inserção
+                await registerUser(userData.name, userData.email, userData.password);
+            }
             setUserDetails(userData);
             localStorage.setItem('userDetails', JSON.stringify(userData));
-            console.log("UP", response.data);
-            return response.data;
         } catch (error) {
             console.error('Erro ao atualizar detalhes do usuário:', error);
             throw error;

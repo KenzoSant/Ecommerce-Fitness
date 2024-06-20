@@ -63,6 +63,21 @@ const User = () => {
     setSelectedAddress(address);
   };
 
+  const handleRegisterOrUpdate = async () => {
+    try {
+      if (editedUser.id) {
+        // Atualiza os detalhes do usuário
+        await updateUserDetails(editedUser);
+      } else {
+        // Registra um novo usuário
+        await registerUser(editedUser.name, editedUser.email, editedUser.password);
+      }
+      showNotification('Dados atualizados com sucesso!', 'success');
+    } catch (error) {
+      showNotification('Erro ao atualizar dados!', 'error');
+    }
+  };
+
   if (!isLoggedIn) {
     navigate('/');
   }
@@ -114,7 +129,7 @@ const User = () => {
               </div>
               <br />
               {isEditing ? (
-                <button className="button-edit" onClick={handleSaveChanges}>
+                <button className="button-edit" onClick={handleRegisterOrUpdate}>
                   Salvar
                 </button>
               ) : (
