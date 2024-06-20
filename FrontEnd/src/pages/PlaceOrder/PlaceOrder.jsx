@@ -33,7 +33,18 @@ const PlaceOrder = () => {
     }));
   };
 
+  const isAddressComplete = () => {
+    const { street, number, neighborhood, zipCode, city, state } = address;
+    return street && number && neighborhood && zipCode && city && state;
+  };
+
   const handlePayment = async () => {
+    if (!isAddressComplete()) {
+      setNotification({ message: 'Por favor, preencha todos os campos do endereço.', type: 'error' });
+      setTimeout(() => setNotification({ message: '', type: '' }), 2000);
+      return;
+    }
+
     const orderItems = cartItemList.map(item => ({
       food: { id: item.id },
       quantity: item.quantity,
@@ -72,7 +83,7 @@ const PlaceOrder = () => {
   return (
     <form className='place-order'>
       <div className="place-order-left">
-        <p className="title">Delivery Information</p>
+        <p className="title">Informações de Entrega</p>
 
         <div className="multi-fields">
           <input type="text" placeholder='Nome' value={userDetails?.name || ''} readOnly />
@@ -97,7 +108,7 @@ const PlaceOrder = () => {
       </div>
       <div className="place-order-right">
         <div className="cart-total">
-          <h2>Cart Totals</h2>
+          <h2>Totais do Carrinho</h2>
           <div className="">
             <div className="cart-total-details">
               <p>Subtotal</p>
@@ -105,7 +116,7 @@ const PlaceOrder = () => {
             </div>
             <hr />
             <div className="cart-total-details">
-              <p>Delivery Fee</p>
+              <p>Taxa de Entrega</p>
               <b>${getTotalCartAmount() === 0 ? 0 : 5}</b>
             </div>
             <hr />
@@ -114,7 +125,7 @@ const PlaceOrder = () => {
               <b>${(getTotalCartAmount() + 5).toFixed(2)}</b>
             </div>
           </div>
-          <button type="button" onClick={handlePayment} disabled={getTotalCartAmount() === 0}>PAYMENT</button>
+          <button type="button" onClick={handlePayment} disabled={getTotalCartAmount() === 0 || !isAddressComplete()}>PAGAMENTO</button>
         </div>
       </div>
       {notification.message && (

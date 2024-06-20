@@ -12,6 +12,7 @@ const StoreContextProvider = (props) => {
     const [userId, setUserId] = useState(localStorage.getItem('userId') || null);
     const [userDetails, setUserDetails] = useState(JSON.parse(localStorage.getItem('userDetails')) || null);
     const [userOrders, setUserOrders] = useState([]);
+    const [usera, setUsera] = useState([]);
 
     useEffect(() => {
         const fetchFoodList = async () => {
@@ -178,43 +179,24 @@ const StoreContextProvider = (props) => {
         }
     };
 
-    const updateUserDetails = async (userData) => {
-        try {
-            // Verifica se é uma atualização ou inserção
-            if (userData.id) {
-                // Atualização
-                await axios.put(`http://localhost:8080/clients/email/${userData.email}`, userData);
-            } else {
-                // Inserção
-                await registerUser(userData.name, userData.email, userData.password);
-            }
-            setUserDetails(userData);
-            localStorage.setItem('userDetails', JSON.stringify(userData));
-        } catch (error) {
-            console.error('Erro ao atualizar detalhes do usuário:', error);
-            throw error;
-        }
-    };
 
     const registerOrUpdateUser = async (userData) => {
-        console.log("CC",userData);
         try {
-            // Sempre realiza uma inserção de usuário
-            const response = await axios.post(`http://localhost:8080/clients/email/${userData.email}`, userData);
-            console.log("UP1", userData);
+            await axios.put(`http://localhost:8080/clients/email/${userData.email}`, userData);
+            console.log("1", userData);
+            setUserDetails(userData);
+            localStorage.setItem('userDetails', JSON.stringify(userData));
             setIsLoggedIn(true);
             localStorage.setItem('isLoggedIn', 'true');
-            localStorage.setItem('userId', response.data.id);
-            setUserId(response.data.id);
-            setUserDetails(response.data);
-            localStorage.setItem('userDetails', JSON.stringify(response.data));
-            return response.data;
+            localStorage.setItem('userId', userData.id);
+            setUserId(userData.id);
+            return userData;
         } catch (error) {
-            console.error('Erro durante o cadastro do usuário:', error);
+            console.error('Erro durante o cadastro/atualização do usuário:', error);
             throw error;
         }
     };
-
+    
     
     const contextValue = {
         foodList,
@@ -237,7 +219,6 @@ const StoreContextProvider = (props) => {
         userOrders,
         updateUser,
         setUserOrders,
-        updateUserDetails,
         registerOrUpdateUser,
     };
 

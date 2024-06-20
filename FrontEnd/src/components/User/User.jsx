@@ -2,8 +2,8 @@ import React, { useEffect, useContext, useState } from 'react';
 import './User.css';
 import { StoreContext } from '../../context/StoreContext';
 import { assets } from '../../assets/assets';
-import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
 
 const Notification = ({ message, type }) => (
   <div className={`notification ${type}`}>
@@ -18,13 +18,13 @@ const User = () => {
     fetchUserOrders,
     userOrders,
     userDetails,
-    updateUser,
-    logout
+    registerOrUpdateUser,
+    setUserDetails, // Use esta função para atualizar manualmente os dados do usuário
   } = useContext(StoreContext);
   const [editedUser, setEditedUser] = useState(null);
   const [notification, setNotification] = useState({ message: '', type: '' });
-  const [isEditing, setIsEditing] = useState(false);
   const [selectedAddress, setSelectedAddress] = useState(null);
+  const [lastAddressId, setLastAddressId] = useState(0);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -42,19 +42,42 @@ const User = () => {
     }
   }, [userDetails]);
 
+  useEffect(() => {
+    const fetchLastAddressId = async () => {
+      try {
+        const response = await axios.get('http://localhost:8080/addresses');
+        const addresses = response.data;
+        const maxId = addresses.reduce((max, address) => Math.max(max, address.id), 0);
+        setLastAddressId(maxId);
+      } catch (error) {
+        console.error('Erro ao buscar o último ID de endereço:', error);
+      }
+    };
+
+    fetchLastAddressId();
+  }, []);
+
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    if (name in selectedAddress) {
-      setSelectedAddress((prevAddress) => ({
-        ...prevAddress,
-        [name]: value,
-      }));
-    } else {
-      setEditedUser((prevUser) => ({
-        ...prevUser,
-        [name]: value,
-      }));
-    }
+    setEditedUser((prevUser) => ({
+      ...prevUser,
+      [name]: value,
+    }));
+  };
+
+  const handleAddressInputChange = (e) => {
+    const { name, value } = e.target;
+    setSelectedAddress((prevAddress) => ({
+      ...prevAddress,
+      [name]: value,
+    }));
+
+    setEditedUser((prevUser) => ({
+      ...prevUser,
+      addresses: prevUser.addresses.map((address) => 
+        address.id === selectedAddress.id ? { ...selectedAddress, [name]: value } : address
+      ),
+    }));
   };
 
   const handleAddressChange = (e) => {
@@ -63,18 +86,52 @@ const User = () => {
     setSelectedAddress(address);
   };
 
-  const handleRegisterOrUpdate = async () => {
+  const handleAddAddress = () => {
+    const newAddress = {
+      id: lastAddressId + 1,
+      zipCode: '',
+      state: '',
+      city: '',
+      neighborhood: '',
+      street: '',
+      number: '',
+      status: 'active',
+    };
+    setEditedUser((prevUser) => ({
+      ...prevUser,
+      addresses: [...prevUser.addresses, newAddress],
+    }));
+    setSelectedAddress(newAddress);
+    setLastAddressId(lastAddressId + 1);
+  };
+
+  const handleSave = async () => {
     try {
-      if (editedUser.id) {
-        // Atualiza os detalhes do usuário
-        await updateUserDetails(editedUser);
-      } else {
-        // Registra um novo usuário
-        await registerUser(editedUser.name, editedUser.email, editedUser.password);
-      }
-      showNotification('Dados atualizados com sucesso!', 'success');
+      const updatedUserData = {
+        id: editedUser.id,
+        email: editedUser.email,
+        name: editedUser.name,
+        document: editedUser.document,
+        phone: editedUser.phone,
+        password: editedUser.password,
+        status: editedUser.status,
+        addresses: editedUser.addresses.map(address => ({
+          id: address.id,
+          zipCode: address.zipCode,
+          state: address.state,
+          city: address.city,
+          neighborhood: address.neighborhood,
+          street: address.street,
+          number: address.number,
+          status: address.status,
+        }))
+      };
+      console.log("20",updatedUserData);
+      await registerOrUpdateUser(updatedUserData);
+      setNotification({ message: 'Dados atualizados com sucesso!', type: 'success' });
+      setUserDetails(updatedUserData); // Atualiza manualmente os dados do usuário no contexto
     } catch (error) {
-      showNotification('Erro ao atualizar dados!', 'error');
+      setNotification({ message: 'Erro ao atualizar dados!', type: 'error' });
     }
   };
 
@@ -92,84 +149,73 @@ const User = () => {
             className="user-image"
           />
           <h2>Olá {editedUser?.name || 'Usuário'}</h2>
+          <div>
+            
+            <button className="save-button" onClick={handleSave}>Salvar</button>
+          </div>
           <br />
         </div>
         <div className="user-info">
-          {editedUser && (
-            <>
-              <h2>Informações</h2>
-              <div className="user-info-start">
-                <div className="flex-col class">
-                  <label>Email:</label>
-                  <input
-                    type="email"
-                    name="email"
-                    value={editedUser.email || ''}
-                    readOnly={!isEditing}
-                  />
-                </div>
-                <div className="flex-col class">
-                  <label>Documento:</label>
-                  <input
-                    type="text"
-                    name="document"
-                    value={editedUser.document || ''}
-                    readOnly={!isEditing}
-                  />
-                </div>
-                <div className="flex-col class">
-                  <label>Telefone:</label>
-                  <input
-                    type="text"
-                    name="phone"
-                    value={editedUser.phone || ''}
-                    readOnly={!isEditing}
-                  />
-                </div>
+          <h2>Informações</h2>
+          <div className="user-info-start">
+            <div className="flex-col class">
+              <label>Email:</label>
+              <input
+                type="email"
+                name="email"
+                value={editedUser?.email || ''}
+                onChange={handleInputChange}
+              />
+            </div>
+            <div className="flex-col class">
+              <label>Documento:</label>
+              <input
+                type="text"
+                name="document"
+                value={editedUser?.document || ''}
+                onChange={handleInputChange}
+              />
+            </div>
+            <div className="flex-col class">
+              <label>Telefone:</label>
+              <input
+                type="text"
+                name="phone"
+                value={editedUser?.phone || ''}
+                onChange={handleInputChange}
+              />
+            </div>
+          </div>
+          <br /><br />
+          <h2>Endereço</h2>
+          <div className="flex-col class">
+            <label>Selecionar Endereço:</label>
+            <select
+              value={selectedAddress?.id || ''}
+              onChange={handleAddressChange}
+            >
+              {editedUser?.addresses && editedUser?.addresses.length > 0 && editedUser?.addresses.map((address) => (
+                <option key={address.id} value={address.id}>
+                  {`${address.street}, ${address.number} - ${address.neighborhood}`}
+                </option>
+              ))}
+            </select>
+            <button onClick={handleAddAddress}>Adicionar Endereço</button>
+          </div>
+          <br />
+          <div className="user-info-end">
+            {['street', 'number', 'neighborhood', 'city', 'state', 'zipCode'].map((field) => (
+              <div className="flex-col class" key={field}>
+                <label>{field.charAt(0).toUpperCase() + field.slice(1)}:</label>
+                <input
+                  type="text"
+                  name={field}
+                  value={selectedAddress?.[field] || ''}
+                  onChange={handleAddressInputChange}
+                />
               </div>
-              <br />
-              {isEditing ? (
-                <button className="button-edit" onClick={handleRegisterOrUpdate}>
-                  Salvar
-                </button>
-              ) : (
-                <button className="button-edit" onClick={() => setIsEditing(true)}>
-                  Editar
-                </button>
-              )}
-              <br /><br />
-              <h2>Endereço</h2>
-              <div className="flex-col class">
-                <label>Selecionar Endereço:</label>
-                <select
-                  value={selectedAddress?.id || ''}
-                  onChange={handleAddressChange}
-                  disabled={!isEditing}
-                >
-                  {editedUser.addresses && editedUser.addresses.length > 0 && editedUser.addresses.map((address) => (
-                    <option key={address.id} value={address.id}>
-                      {`${address.street}, ${address.number} - ${address.neighborhood}`}
-                    </option>
-                  ))}
-                </select>
-              </div>
-              <br />
-              <div className="user-info-end">
-                {['street', 'number', 'neighborhood', 'city', 'state', 'zipCode'].map((field) => (
-                  <div className="flex-col class" key={field}>
-                    <label>{field.charAt(0).toUpperCase() + field.slice(1)}:</label>
-                    <input
-                      type="text"
-                      name={field}
-                      value={selectedAddress?.[field] || ''}
-                      readOnly={!isEditing}
-                    />
-                  </div>
-                ))}
-              </div>
-            </>
-          )}
-
+            ))}
+          </div>
           <div className="user-orders">
             <h2>Meus Pedidos</h2>
             <ul>
