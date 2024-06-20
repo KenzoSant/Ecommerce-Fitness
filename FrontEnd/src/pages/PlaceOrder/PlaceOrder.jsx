@@ -2,9 +2,10 @@ import React, { useContext, useState, useEffect } from 'react';
 import "./PlaceOrder.css";
 import { StoreContext } from '../../context/StoreContext';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 
 const PlaceOrder = () => {
-  const { getTotalCartAmount, cartItemList, userDetails } = useContext(StoreContext);
+  const { getTotalCartAmount, cartItemList, userDetails, clearCart } = useContext(StoreContext);
   const [address, setAddress] = useState({
     street: '',
     number: '',
@@ -14,6 +15,8 @@ const PlaceOrder = () => {
     state: '',
     country: 'Brasil'
   });
+  const [notification, setNotification] = useState({ message: '', type: '' });
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (userDetails && userDetails.addresses && userDetails.addresses.length > 0) {
@@ -54,15 +57,15 @@ const PlaceOrder = () => {
       address: addressString,
     };
 
-    console.log('Order Data:', orderData);  // Log the order data for debugging
-
     try {
       const response = await axios.post('http://localhost:8080/orders', orderData);
-      console.log('Response:', response);
-      alert('Order placed successfully!');
+      setNotification({ message: 'Pedido efetuado com sucesso!', type: 'success' });
+      clearCart();
+      setTimeout(() => {setNotification({ message: '', type: '' });}, 2000);
+      setTimeout(() => {navigate('/');}, 2200);
     } catch (error) {
-      console.error('Error placing order:', error);
-      alert('Error placing order.');
+      setNotification({ message: 'Erro ao realizar pedido!', type: 'error' });
+      setTimeout(() => setNotification({ message: '', type: '' }), 2000);
     }
   };
 
@@ -111,9 +114,14 @@ const PlaceOrder = () => {
               <b>${(getTotalCartAmount() + 5).toFixed(2)}</b>
             </div>
           </div>
-          <button type="button" onClick={handlePayment}>PAYMENT</button>
+          <button type="button" onClick={handlePayment} disabled={getTotalCartAmount() === 0}>PAYMENT</button>
         </div>
       </div>
+      {notification.message && (
+        <div className={`notification ${notification.type}`}>
+          {notification.message}
+        </div>
+      )}
     </form>
   );
 }

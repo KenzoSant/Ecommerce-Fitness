@@ -76,3 +76,20 @@
 .user-orders h4 {
   margin: 0 0 10px;
 }
+
+.button-edit {
+  border: none;
+  color: var(--primary-color-white);
+  background-color: var(--second-color-green);
+  width: max(15vw,200px);
+  padding: 12px 0px;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: .5s;
+}
+.button-edit:hover,
+.button-edit:focus {
+box-shadow: inset 15em 0 0 0 var(--second-color-orange);
+transition: .5s;
+color: #f5f6fa;
+}

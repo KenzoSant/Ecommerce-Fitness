@@ -18,8 +18,9 @@ const User = () => {
     fetchUserOrders,
     userOrders,
     userDetails,
-    updateUser,
-    logout
+    updateUserDetails,
+    logoutUser,
+    registerOrUpdateUser // Importe a função registerOrUpdateUser do contexto
   } = useContext(StoreContext);
   const [editedUser, setEditedUser] = useState(null);
   const [notification, setNotification] = useState({ message: '', type: '' });
@@ -31,7 +32,6 @@ const User = () => {
     if (isLoggedIn && userId) {
       fetchUserOrders(userId);
     }
-    console.log("VV",userId);
   }, [isLoggedIn, userId, navigate]);
 
   useEffect(() => {
@@ -66,19 +66,19 @@ const User = () => {
 
   const handleSaveChanges = async () => {
     try {
-        const updatedUser = {
-            ...editedUser,
-            addresses: editedUser.addresses.map((addr) =>
-                addr.id === selectedAddress.id ? selectedAddress : addr
-            ),
-        };
-        await registerOrUpdateUser(updatedUser);
-        showNotification('Alterado com sucesso!', 'success');
-        setIsEditing(false);
+      const updatedUser = {
+        ...editedUser,
+        addresses: editedUser.addresses.map((addr) =>
+          addr.id === selectedAddress.id ? selectedAddress : addr
+        ),
+      };
+      await registerOrUpdateUser(updatedUser); // Utilize a função registerOrUpdateUser do contexto
+      showNotification('Alterado com sucesso!', 'success');
+      setIsEditing(false);
     } catch (error) {
-        showNotification('Erro ao alterar!', 'error');
+      showNotification('Erro ao alterar!', 'error');
     }
-};
+  };
 
   const showNotification = (message, type) => {
     setNotification({ message, type });
@@ -87,6 +87,7 @@ const User = () => {
 
   if (!isLoggedIn) {
     navigate('/');
+    return null;
   }
 
   if (!editedUser || !selectedAddress) {
@@ -139,33 +140,34 @@ const User = () => {
               />
             </div>
           </div>
+          <br />
           {isEditing ? (
-            <button className="btn" onClick={handleSaveChanges}>
+            <button className="button-edit" onClick={handleSaveChanges}>
               Salvar
             </button>
           ) : (
-            <button className="btn" onClick={() => setIsEditing(true)}>
+            <button className="button-edit" onClick={() => setIsEditing(true)}>
               Editar
             </button>
           )}
           <br /><br />
           <h2>Endereço</h2>
           <div className="flex-col class">
-              <label>Selecionar Endereço:</label>
-              <select
-                value={selectedAddress.id || ''}
-                onChange={handleAddressChange}
-                disabled={!isEditing}
-              >
-                {editedUser.addresses && editedUser.addresses.length > 0 && editedUser.addresses.map((address) => (
-                  <option key={address.id} value={address.id}>
-                    {`${address.street}, ${address.number} - ${address.neighborhood}`}
-                  </option>
-                ))}
-              </select>
-            </div>
-            <br />
-          <div className="user-info-end"> 
+            <label>Selecionar Endereço:</label>
+            <select
+              value={selectedAddress.id || ''}
+              onChange={handleAddressChange}
+              disabled={!isEditing}
+            >
+              {editedUser.addresses && editedUser.addresses.length > 0 && editedUser.addresses.map((address) => (
+                <option key={address.id} value={address.id}>
+                  {`${address.street}, ${address.number} - ${address.neighborhood}`}
+                </option>
+              ))}
+            </select>
+          </div>
+          <br />
+          <div className="user-info-end">
             {['street', 'number', 'neighborhood', 'city', 'state', 'zipCode'].map((field) => (
               <div className="flex-col class" key={field}>
                 <label>{field.charAt(0).toUpperCase() + field.slice(1)}:</label>
@@ -205,3 +207,4 @@ const User = () => {
 };
 
 export default User;
+

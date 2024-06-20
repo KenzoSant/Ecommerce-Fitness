@@ -21,8 +21,8 @@ const Cart = () => {
         </div>
         <br />
         <hr />
-        {cartItemList.map((item,index)=>{
-          return(
+        {cartItemList.map((item, index) => {
+          return (
             <div className="" key={item.id}>
               <div className="cart-items-title cart-items-item">
                 <img src={item.image} alt="" />
@@ -30,7 +30,7 @@ const Cart = () => {
                 <p>R${item.price.toFixed(2)}</p>
                 <p>{item.quantity}</p>
                 <p>R${(item.price * item.quantity).toFixed(2)}</p>
-                <p onClick={()=>removeFromCart(item.id)} className="cross">×</p>
+                <p onClick={() => removeFromCart(item.id)} className="cross">×</p>
               </div>
               <hr />
             </div>
@@ -38,7 +38,7 @@ const Cart = () => {
         })}
       </div>
       <div className="cart-bottom">
-        <div className="cart-total">  
+        <div className="cart-total">
           <h2>Cart Totals</h2>
           <div className="">
             <div className="cart-total-details">
@@ -48,7 +48,7 @@ const Cart = () => {
             <hr />
             <div className="cart-total-details">
               <p>Delivery Fee</p>
-              <b>${getTotalCartAmount()===0?0:5}</b>
+              <b>${getTotalCartAmount() === 0 ? 0 : 5}</b>
             </div>
             <hr />
             <div className="cart-total-details">
@@ -56,14 +56,14 @@ const Cart = () => {
               <b>${(getTotalCartAmount() + 5).toFixed(2)}</b>
             </div>
           </div>
-          <button onClick={()=>navigate('/order')} >CHECKOUT</button>
+          <button onClick={() => navigate('/order')}>PRONTO</button>
         </div>
         <div className="cart-promocode">
           <div className="">
-            <p>Do you have a promo code? Enter it here</p>
+            <p>Tem um código de promoção? Digite-o</p>
             <div className="cart-promocode-input">
               <input type="text" placeholder='Promo Code' />
-              <button>SUBMIT</button>
+              <button>VALIDAR</button>
             </div>
           </div>
         </div>

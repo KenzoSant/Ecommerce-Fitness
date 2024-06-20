@@ -7,11 +7,11 @@ const StoreContextProvider = (props) => {
     const [cartItems, setCartItems] = useState({});
     const [foodList, setFoodList] = useState([]);
     const [categories, setCategories] = useState([]);
-    const [cartItemList, setCartItemList] = useState([]);
+    const [cartItemList, setCartItemList] = useState(JSON.parse(localStorage.getItem('cartItemList')) || []);
     const [isLoggedIn, setIsLoggedIn] = useState(!!localStorage.getItem('isLoggedIn'));
     const [userId, setUserId] = useState(localStorage.getItem('userId') || null);
-    const [userDetails, setUserDetails] = useState(JSON.parse(localStorage.getItem('userDetails')) || null); 
-    const [userOrders, setUserOrders] = useState([]); 
+    const [userDetails, setUserDetails] = useState(JSON.parse(localStorage.getItem('userDetails')) || null);
+    const [userOrders, setUserOrders] = useState([]);
 
     useEffect(() => {
         const fetchFoodList = async () => {
@@ -43,6 +43,10 @@ const StoreContextProvider = (props) => {
         fetchFoodList();
         fetchCategories();
     }, []);
+
+    useEffect(() => {
+        localStorage.setItem('cartItemList', JSON.stringify(cartItemList));
+    }, [cartItemList]);
 
     const addToCart = (itemId, itemName, itemPrice, itemImage) => {
         if (!cartItems[itemId]) {
@@ -81,6 +85,11 @@ const StoreContextProvider = (props) => {
         }
     };
 
+    const clearCart = () => {
+        setCartItems({});
+        setCartItemList([]);
+    };
+
     const getTotalCartAmount = () => {
         return cartItemList.reduce((total, item) => total + item.price * item.quantity, 0);
     };
@@ -89,13 +98,12 @@ const StoreContextProvider = (props) => {
         return cartItemList.reduce((total, item) => total + item.quantity, 0);
     };
 
-    const registerUser = async (name, email, password, address) => {
+    const registerUser = async (name, email, password) => {
         try {
             const response = await axios.post('http://localhost:8080/clients/auth/register', {
                 name,
                 email,
                 password,
-                address
             });
             console.log('Registration successful:', response.data);
             setIsLoggedIn(true);
@@ -118,25 +126,25 @@ const StoreContextProvider = (props) => {
                 password
             });
             console.log('Login successful:', response.data);
-    
+
             const userId = response.data.email;
-            console.log("AA",response.data.email);
-    
+            console.log("AA", response.data.email);
+
             const userDetailsResponse = await axios.get(`http://localhost:8080/clients/email/${userId}`);
             const userDetails = userDetailsResponse.data;
-    
+
             setUserDetails(userDetails);
             localStorage.setItem('userDetails', JSON.stringify(userDetails));
             setIsLoggedIn(true);
             localStorage.setItem('isLoggedIn', 'true');
             localStorage.setItem('userId', userId);
-            console.log("BB",localStorage);
-    
+            console.log("BB", localStorage);
+
             // Atualiza o estado userId
             setUserId(userId);
-    
+
             fetchUserOrders(userId);
-    
+
             return response.data;
         } catch (error) {
             console.error('Error during login:', error);
@@ -156,7 +164,8 @@ const StoreContextProvider = (props) => {
         setUserId(null);
         setUserDetails(null);
         setUserOrders([]);
-        console.log("BB",localStorage);
+        clearCart(); // Limpar carrinho ao deslogar
+        console.log("BB", localStorage);
     };
 
     const fetchUserOrders = async (userId) => {
@@ -173,36 +182,34 @@ const StoreContextProvider = (props) => {
             const response = await axios.put(`http://localhost:8080/clients/email/${userData.email}`, userData);
             setUserDetails(userData);
             localStorage.setItem('userDetails', JSON.stringify(userData));
-            console.log("UP",response.data);
+            console.log("UP", response.data);
             return response.data;
         } catch (error) {
             console.error('Erro ao atualizar detalhes do usuário:', error);
             throw error;
         }
     };
-    
+
     const registerOrUpdateUser = async (userData) => {
+        console.log("CC",userData);
         try {
-            if (userData.id) {
-                await updateUserDetails(userData);
-                console.log("UP2",userData);
-            } else {
-                const response = await axios.post('http://localhost:8080/clients/auth/register', userData);
-                console.log("UP1",userData);
-                setIsLoggedIn(true);
-                localStorage.setItem('isLoggedIn', 'true');
-                localStorage.setItem('userId', response.data.id);
-                setUserId(response.data.id);
-                setUserDetails(response.data);
-                localStorage.setItem('userDetails', JSON.stringify(response.data));
-                return response.data;
-            }
+            // Sempre realiza uma inserção de usuário
+            const response = await axios.post(`http://localhost:8080/clients/email/${userData.email}`, userData);
+            console.log("UP1", userData);
+            setIsLoggedIn(true);
+            localStorage.setItem('isLoggedIn', 'true');
+            localStorage.setItem('userId', response.data.id);
+            setUserId(response.data.id);
+            setUserDetails(response.data);
+            localStorage.setItem('userDetails', JSON.stringify(response.data));
+            return response.data;
         } catch (error) {
-            console.error('Erro durante registro ou atualização do usuário:', error);
+            console.error('Erro durante o cadastro do usuário:', error);
             throw error;
         }
     };
 
+    
     const contextValue = {
         foodList,
         categories,
@@ -211,6 +218,7 @@ const StoreContextProvider = (props) => {
         cartItemList,
         addToCart,
         removeFromCart,
+        clearCart,
         getTotalCartAmount,
         getTotalCartItems,
         registerUser,
@@ -221,8 +229,8 @@ const StoreContextProvider = (props) => {
         fetchUserOrders,
         userDetails,
         userOrders,
-        updateUser, 
-        setUserOrders, 
+        updateUser,
+        setUserOrders,
         updateUserDetails,
         registerOrUpdateUser,
     };
